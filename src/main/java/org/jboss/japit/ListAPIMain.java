@@ -36,24 +36,10 @@ public class ListAPIMain {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws IOException {
-//        new ListAPIMain().checkOptions(args);        
-        new ListAPIMain().doMain(args);
+        new ListAPIMain().checkOptions(args);
     }
 
-    private void checkOptions(String[] args) {
-        ListAPIMainOptions options = new ListAPIMainOptions();
-        CmdLineParser parser = new CmdLineParser(options);
-        parser.setUsageWidth(80);
-        try {
-            parser.parseArgument(args);
-        } catch (CmdLineException ex) {
-            System.err.println(ex.getMessage());
-            System.err.println("java -jar myprogram.jar [options...] arguments...");
-            parser.printUsage(System.err);
-        }
-    }
-
-    public void doMain(String[] args) throws IOException {
+    public void checkOptions(String[] args) throws IOException {
         ListAPIMainOptions options = new ListAPIMainOptions();
         CmdLineParser parser = new CmdLineParser(options);
         parser.setUsageWidth(80);
