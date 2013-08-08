@@ -36,11 +36,14 @@ public class ListAPIMainOptions {
     @Option(name = "-c", aliases = { "--class" }, usage = "List API only for specified class", metaVar="FQCN")
     private String selectedFQCN;   
     
-    @Option(name = "-d", aliases = { "--disable-text" }, usage = "disable text output")
+    @Option(name = "-d", aliases = { "--disable-console-output" }, usage = "Disable text output to the console")
     private boolean textOutputDisbled = false;
     
     @Option(name = "-h", aliases = { "--html-output" }, usage = "Enable HTML output and set output directory", metaVar="DIR")
     private File htmlOutputDir;   
+    
+    @Option(name = "-t", aliases = { "--txt-output" }, usage = "Enable TXT output and set output directory", metaVar="DIR")
+    private File txtOutputDir;   
     
     // receives other command line parameters than options
     @Argument
@@ -62,9 +65,18 @@ public class ListAPIMainOptions {
         return htmlOutputDir;
     }
 
+    public File getTxtOutputDir() {
+        return txtOutputDir;
+    }
+
+    
     @Override
     public String toString() {
-        return "ListAPIMainOptions{" + "selectedFQCN=" + selectedFQCN + ", textOutputDisbled=" + textOutputDisbled + ", htmlOutputDir=" + htmlOutputDir + ", arguments=" + arguments + '}';
+        return "ListAPIMainOptions{" + "selectedFQCN=" + selectedFQCN + ", "
+                + "textOutputDisbled=" + textOutputDisbled + ", "
+                + "htmlOutputDir=" + htmlOutputDir + ", "
+                + "txtOutputDir=" + txtOutputDir + ", "
+                + "arguments=" + arguments + '}';
     }
 
     

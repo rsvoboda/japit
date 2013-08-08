@@ -21,7 +21,17 @@
  */
 package org.jboss.japit;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.TreeSet;
+import org.jboss.japit.analyser.JarAnalyser;
+import org.jboss.japit.core.Archive;
+import org.jboss.japit.core.JarArchive;
+import org.jboss.japit.reporting.Reporting;
+import org.jboss.japit.reporting.TxtFileReportGenerator;
+import org.jboss.japit.reporting.TextReportGenerator;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.OptionHandlerFilter;
@@ -43,12 +53,10 @@ public class ListAPIMain {
         ListAPIMainOptions options = new ListAPIMainOptions();
         CmdLineParser parser = new CmdLineParser(options);
         parser.setUsageWidth(80);
+        List<File> inputFiles = new ArrayList<File>();
 
         try {
             parser.parseArgument(args);
-
-            //TODO remove, for debugging only
-            System.out.println("--> " + options);
 
             if (options.getArguments().isEmpty()) {
                 throw new CmdLineException(parser, "No argument is given");
@@ -56,13 +64,31 @@ public class ListAPIMain {
             if (options.getHtmlOutputDir() != null && options.getHtmlOutputDir().isFile()) {
                 throw new CmdLineException(parser, "HTML output must point to the directory");
             }
+            if (options.getTxtOutputDir() != null && options.getTxtOutputDir().isFile()) {
+                throw new CmdLineException(parser, "TXT output must point to the directory");
+            }
+
+            for (String argument : options.getArguments()) {
+                File inputFile = new File(argument);
+                if (!inputFile.isFile()) {
+                    throw new CmdLineException(parser, "Provided argument (" + argument 
+                            + ") is not a file " );
+                }
+                inputFiles.add(inputFile);
+            }
+
         } catch (CmdLineException e) {
             System.err.println(e.getMessage());
             parser.printUsage(System.err);
             System.err.println();
-            System.err.println("  Example: java " + this.getClass().getCanonicalName() + parser.printExample(OptionHandlerFilter.ALL) + "  FileToAnalyze");
+            System.err.println("  Example: java " + this.getClass().getCanonicalName() + parser.printExample(OptionHandlerFilter.ALL) + "  JarFile1 [JarFile2 ...]");
 
             return;
         }
+
+        TreeSet<Archive> jarArchives = JarAnalyser.analyseJars(inputFiles, options.getSelectedFQCN());
+        
+        Reporting.generateReports(jarArchives, options.isTextOutputDisbled(), options.getTxtOutputDir(), options.getHtmlOutputDir());
+        
     }
 }
