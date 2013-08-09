@@ -19,7 +19,6 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-
 package org.jboss.japit.core;
 
 import java.util.TreeSet;
@@ -32,9 +31,8 @@ public class JarArchive implements Archive, Comparable<JarArchive> {
 
     private String fileName;
     private String filePath;
-    private TreeSet<ClassArchive> classes;
+    private TreeSet<ClassDetails> classes;
 
-    
     public JarArchive() {
     }
 
@@ -43,13 +41,12 @@ public class JarArchive implements Archive, Comparable<JarArchive> {
         this.filePath = filePath;
     }
 
-    public JarArchive(String fileName, String filePath, TreeSet<ClassArchive> classes) {
+    public JarArchive(String fileName, String filePath, TreeSet<ClassDetails> classes) {
         this.fileName = fileName;
         this.filePath = filePath;
         this.classes = classes;
     }
-    
-    
+
     public String getFileName() {
         return fileName;
     }
@@ -66,23 +63,24 @@ public class JarArchive implements Archive, Comparable<JarArchive> {
         this.filePath = filePath;
     }
 
-    public TreeSet<ClassArchive> getClasses() {
+    public TreeSet<ClassDetails> getClasses() {
         return classes;
     }
 
-    public void setClasses(TreeSet<ClassArchive> classes) {
+    public void setClasses(TreeSet<ClassDetails> classes) {
         this.classes = classes;
-    }  
-    
+    }
+
     public int compareTo(JarArchive o) {
         return this.filePath.compareTo(o.getFilePath());
     }
-     @Override
+
+    @Override
     public String toString() {
 
         return "File name: " + fileName + "\n"
                 + "File path: " + filePath + "\n"
                 + classes + "\n";
     }
-    
+
 }

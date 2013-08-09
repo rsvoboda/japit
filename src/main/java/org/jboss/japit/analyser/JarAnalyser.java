@@ -34,7 +34,7 @@ import javassist.CtClass;
 import javassist.CtField;
 import javassist.CtMethod;
 import org.jboss.japit.core.Archive;
-import org.jboss.japit.core.ClassArchive;
+import org.jboss.japit.core.ClassDetails;
 import org.jboss.japit.core.JarArchive;
 
 /**
@@ -58,7 +58,7 @@ public class JarAnalyser {
                 ex.printStackTrace();
                 continue;
             }
-            TreeSet<ClassArchive> classes = new TreeSet<ClassArchive>();
+            TreeSet<ClassDetails> classes = new TreeSet<ClassDetails>();
 
             Enumeration<JarEntry> jarEntries = jar.entries();
             while (jarEntries.hasMoreElements()) {
@@ -74,7 +74,7 @@ public class JarAnalyser {
 
                         if (selectedFQCN == null || (selectedFQCN != null && ctClz.getName().equals(selectedFQCN))) {
 
-                            ClassArchive classArchive = new ClassArchive(ctClz.getName());
+                            ClassDetails classArchive = new ClassDetails(ctClz.getName());
                             classArchive.setClassVersion(ctClz.getClassFile().getMajorVersion());
                             classArchive.setSuperclassName(ctClz.getClassFile().getSuperclass());
                             classArchive.setReferencedClasses(ctClz.getRefClasses().size());
@@ -98,7 +98,7 @@ public class JarAnalyser {
                         }
                     } catch (Exception ie) {
                         System.err.println("Exception thrown when processing " + entryName);
-                        ie.printStackTrace();
+                        ie.printStackTrace(System.err);
                     } finally {
                         if (entryStream != null) {
                             try {

@@ -19,14 +19,32 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
+package org.jboss.japit;
 
-package org.jboss.japit.core;
+import java.io.IOException;
+import java.util.Properties;
 
 /**
  *
  * @author Rostislav Svoboda
  */
-public interface Archive {
-    public String getFileName() ;
-    public String getFilePath() ;
+public class Application {
+
+    private static Properties prop = null;
+
+    static {
+        prop = new Properties();
+        try {
+            prop.load(Application.class.getClassLoader().getResourceAsStream("application.properties"));
+        } catch (IOException ex) {
+            System.err.println("Error loading application.properties: " + ex.getMessage());
+        }
+    }
+    public static final String PRODUCT = prop.getProperty("application.name");
+    public static final String VERSION = prop.getProperty("application.version");
+    public static final String FULL_VERSION = PRODUCT + " " + VERSION;
+    public static final String HOMEPAGE = "https://github.com/rsvoboda/japit";
+
+    private Application() {
+    }
 }

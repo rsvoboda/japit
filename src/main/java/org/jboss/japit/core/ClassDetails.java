@@ -27,7 +27,7 @@ import java.util.TreeSet;
  *
  * @author Rostislav Svoboda
  */
-public class ClassArchive implements Archive, Comparable<ClassArchive> {
+public class ClassDetails implements Comparable<ClassDetails> {
 
     private String className;
     private int classVersion;
@@ -41,7 +41,7 @@ public class ClassArchive implements Archive, Comparable<ClassArchive> {
     private TreeSet<String> methods;
     private TreeSet<String> fields;
 
-    public ClassArchive(String className) {
+    public ClassDetails(String className) {
         this.className = className;
     }
 
@@ -97,7 +97,7 @@ public class ClassArchive implements Archive, Comparable<ClassArchive> {
         this.declaredMethodsCount = declaredMethodsCount;
     }
 
-    public int getFiledsCount() {
+    public int getFieldsCount() {
         return fields.size();
     }
 
@@ -125,7 +125,7 @@ public class ClassArchive implements Archive, Comparable<ClassArchive> {
         this.fields = fields;
     }
 
-    public int compareTo(ClassArchive o) {
+    public int compareTo(ClassDetails o) {
         return this.className.compareTo(o.getClassName());
     }
 
@@ -140,7 +140,7 @@ public class ClassArchive implements Archive, Comparable<ClassArchive> {
             fString = fString + field + "\n";
         }
         return "\nClass file: " + className + "\n"
-                + "Class version = " + classVersion + "\n"
+                + "Class version: " + classVersion + "\n"
                 + "Superclass file: " + superclassName + "\n"
                 + "Referenced classes count: " + referencedClasses + "\n"
                 + "Original Java file: " + originalJavaFile + "\n"

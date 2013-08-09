@@ -19,18 +19,19 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-
 package org.jboss.japit.reporting;
 
 import java.io.File;
 import java.util.TreeSet;
 import org.jboss.japit.core.Archive;
+import org.jboss.japit.core.JarArchive;
 
 /**
  *
  * @author Rostislav Svoboda
  */
 class HtmlFileReportGenerator implements ReportGenerator {
+
     private final File htmlOutputDir;
 
     public HtmlFileReportGenerator(File htmlOutputDir) {
@@ -41,7 +42,16 @@ class HtmlFileReportGenerator implements ReportGenerator {
     }
 
     public void generateReport(TreeSet<Archive> archives) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
+        if (archives.first() instanceof JarArchive) {
+            HtmlFactory.generateArchiveReport(archives, htmlOutputDir);
+            HtmlFactory.generateCSS(htmlOutputDir);
+            HtmlFactory.generateIndex(archives, htmlOutputDir);
+        } else {
+            throw new UnsupportedOperationException("Can't generate HTML report, "
+                    + archives.first().getClass().getCanonicalName()
+                    + " is not supported yet.");
+        }
+        System.out.println("HTML report in " + htmlOutputDir.getPath() + " was generated");
 
+    }
 }

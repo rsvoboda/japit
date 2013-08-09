@@ -25,13 +25,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.TreeSet;
 import org.jboss.japit.analyser.JarAnalyser;
 import org.jboss.japit.core.Archive;
-import org.jboss.japit.core.JarArchive;
 import org.jboss.japit.reporting.Reporting;
-import org.jboss.japit.reporting.TxtFileReportGenerator;
-import org.jboss.japit.reporting.TextReportGenerator;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.OptionHandlerFilter;
@@ -45,7 +43,7 @@ public class ListAPIMain {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException {       
         new ListAPIMain().checkOptions(args);
     }
 
@@ -71,8 +69,8 @@ public class ListAPIMain {
             for (String argument : options.getArguments()) {
                 File inputFile = new File(argument);
                 if (!inputFile.isFile()) {
-                    throw new CmdLineException(parser, "Provided argument (" + argument 
-                            + ") is not a file " );
+                    throw new CmdLineException(parser, "Provided argument (" + argument
+                            + ") is not a file ");
                 }
                 inputFiles.add(inputFile);
             }
@@ -87,8 +85,8 @@ public class ListAPIMain {
         }
 
         TreeSet<Archive> jarArchives = JarAnalyser.analyseJars(inputFiles, options.getSelectedFQCN());
-        
+
         Reporting.generateReports(jarArchives, options.isTextOutputDisbled(), options.getTxtOutputDir(), options.getHtmlOutputDir());
-        
+
     }
 }

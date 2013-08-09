@@ -23,14 +23,14 @@
             <artifactId>javassist</artifactId>
             <version>${version.javassist}</version>
         </dependency>
-<!--
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>${version.junit}</version>
-            <scope>test</scope>
-        </dependency>
--->
+        <!--
+                <dependency>
+                    <groupId>junit</groupId>
+                    <artifactId>junit</artifactId>
+                    <version>${version.junit}</version>
+                    <scope>test</scope>
+                </dependency>
+        -->
         <dependency>
             <groupId>args4j</groupId>
             <artifactId>args4j</artifactId>
@@ -40,6 +40,13 @@
 
     <build>
         <finalName>${project.artifactId}</finalName>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
