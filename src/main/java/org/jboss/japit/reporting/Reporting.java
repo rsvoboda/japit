@@ -33,7 +33,7 @@ public class Reporting {
 
     public static void generateReports(TreeSet<Archive> archives, boolean isTextOutputDisbled, File txtOutputDir, File htmlOutputDir) {
 
-        if (!isTextOutputDisbled)  {
+        if (!isTextOutputDisbled) {
             new TextReportGenerator().generateReport(archives);
         }
 
@@ -45,11 +45,11 @@ public class Reporting {
             new HtmlFileReportGenerator(htmlOutputDir).generateReport(archives);
         }
     }
-    
-    public static void generateDiffReports(TreeSet<Archive> archives, boolean isTextOutputDisbled, 
+
+    public static void generateDiffReports(TreeSet<Archive> archives, boolean isTextOutputDisbled,
             File txtOutputDir, File htmlOutputDir, boolean ignoreClassVersion, boolean suppressArchiveReport) {
 
-        if (!isTextOutputDisbled)  {
+        if (!isTextOutputDisbled) {
             new TextReportGenerator().generateDiffReport(archives, ignoreClassVersion, suppressArchiveReport);
         }
 
@@ -60,6 +60,6 @@ public class Reporting {
         if (htmlOutputDir != null) {
             new HtmlFileReportGenerator(htmlOutputDir).generateDiffReport(archives, ignoreClassVersion, suppressArchiveReport);
         }
-        
+
     }
 }

@@ -25,7 +25,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 import java.util.TreeSet;
 import org.jboss.japit.analyser.JarAnalyser;
 import org.jboss.japit.core.Archive;
@@ -43,7 +42,7 @@ public class ListAPIMain {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) throws IOException {       
+    public static void main(String[] args) throws IOException {
         new ListAPIMain().checkOptions(args);
     }
 

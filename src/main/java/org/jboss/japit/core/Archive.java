@@ -19,7 +19,6 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-
 package org.jboss.japit.core;
 
 /**
@@ -27,6 +26,8 @@ package org.jboss.japit.core;
  * @author Rostislav Svoboda
  */
 public interface Archive {
-    public String getFileName() ;
-    public String getFilePath() ;
+
+    public String getFileName();
+
+    public String getFilePath();
 }

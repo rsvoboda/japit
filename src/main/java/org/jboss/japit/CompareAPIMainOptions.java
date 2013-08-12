@@ -33,24 +33,18 @@ import org.kohsuke.args4j.Option;
  */
 public class CompareAPIMainOptions {
 
-    @Option(name = "-c", aliases = { "--class" }, usage = "List API only for specified class", metaVar="FQCN")
-    private String selectedFQCN;   
-    
-    @Option(name = "-d", aliases = { "--disable-console-output" }, usage = "Disable text output to the console")
+    @Option(name = "-c", aliases = {"--class"}, usage = "List API only for specified class", metaVar = "FQCN")
+    private String selectedFQCN;
+    @Option(name = "-d", aliases = {"--disable-console-output"}, usage = "Disable text output to the console")
     private boolean textOutputDisbled = false;
-    
-    @Option(name = "-i", aliases = { "--ignore-class-version" }, usage = "Ignore class version in comparison")
+    @Option(name = "-i", aliases = {"--ignore-class-version"}, usage = "Ignore class version in comparison")
     private boolean ignoreClassVersion = false;
-    
-    @Option(name = "-s", aliases = { "--suppress-archive-report" }, usage = "Suppress archive reports in output")
+    @Option(name = "-s", aliases = {"--suppress-archive-report"}, usage = "Suppress archive reports in output")
     private boolean suppressArchiveReport = false;
-    
-    @Option(name = "-h", aliases = { "--html-output" }, usage = "Enable HTML output and set output directory", metaVar="DIR")
-    private File htmlOutputDir;   
-    
-    @Option(name = "-t", aliases = { "--txt-output" }, usage = "Enable TXT output and set output directory", metaVar="DIR")
-    private File txtOutputDir;   
-    
+    @Option(name = "-h", aliases = {"--html-output"}, usage = "Enable HTML output and set output directory", metaVar = "DIR")
+    private File htmlOutputDir;
+    @Option(name = "-t", aliases = {"--txt-output"}, usage = "Enable TXT output and set output directory", metaVar = "DIR")
+    private File txtOutputDir;
     // receives other command line parameters than options
     @Argument
     private List<String> arguments = new ArrayList<String>();
@@ -82,7 +76,7 @@ public class CompareAPIMainOptions {
     public boolean isSuppressArchiveReport() {
         return suppressArchiveReport;
     }
-    
+
     @Override
     public String toString() {
         return "ListAPIMainOptions{" + "selectedFQCN=" + selectedFQCN + ", "
@@ -93,7 +87,4 @@ public class CompareAPIMainOptions {
                 + "txtOutputDir=" + txtOutputDir + ", "
                 + "arguments=" + arguments + '}';
     }
-
-    
-    
 }

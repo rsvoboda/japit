@@ -82,5 +82,4 @@ public class JarArchive implements Archive, Comparable<JarArchive> {
                 + "File path: " + filePath + "\n"
                 + classes + "\n";
     }
-
 }
