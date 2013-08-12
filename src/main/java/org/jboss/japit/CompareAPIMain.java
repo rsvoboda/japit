@@ -25,7 +25,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import org.jboss.japit.analyser.JarAnalyser;
@@ -52,8 +51,7 @@ public class CompareAPIMain {
     private boolean failCalled;
 
     public void checkOptions(String[] args) throws IOException {
-        // TODO valid options
-        ListAPIMainOptions options = new ListAPIMainOptions();
+        CompareAPIMainOptions options = new CompareAPIMainOptions();
         CmdLineParser parser = new CmdLineParser(options);
         parser.setUsageWidth(80);
         List<File> inputFiles = new ArrayList<File>();
@@ -63,6 +61,9 @@ public class CompareAPIMain {
 
             if (options.getArguments().isEmpty()) {
                 throw new CmdLineException(parser, "No argument is given");
+            }
+            if (options.getArguments().size() != 2) {
+                throw new CmdLineException(parser, "Two arguments are expected");
             }
             if (options.getHtmlOutputDir() != null && options.getHtmlOutputDir().isFile()) {
                 throw new CmdLineException(parser, "HTML output must point to the directory");
@@ -84,14 +85,16 @@ public class CompareAPIMain {
             System.err.println(e.getMessage());
             parser.printUsage(System.err);
             System.err.println();
-            System.err.println("  Example: java " + this.getClass().getCanonicalName() + parser.printExample(OptionHandlerFilter.ALL) + "  JarFile1 [JarFile2 ...]");
+            System.err.println("  Example: java " + this.getClass().getCanonicalName() + parser.printExample(OptionHandlerFilter.ALL) 
+                    + "  FirstJarFile SecondJarFile");
 
             return;
         }
 
         TreeSet<Archive> jarArchives = JarAnalyser.analyseJars(inputFiles, options.getSelectedFQCN());
 
-//        Reporting.generateReports(jarArchives, options.isTextOutputDisbled(), options.getTxtOutputDir(), options.getHtmlOutputDir());
+//        Reporting.generateDiffReports(jarArchives, options.isTextOutputDisbled(), options.getTxtOutputDir(), 
+//                options.getHtmlOutputDir(), options.isIgnoreClassVersion(), options.isSuppressArchiveReport());
 
         JarArchive first = (JarArchive) jarArchives.pollFirst();
         JarArchive second = (JarArchive) jarArchives.pollFirst();
