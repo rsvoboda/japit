@@ -30,5 +30,6 @@ import org.jboss.japit.core.Archive;
  * @author Rostislav Svoboda
  */
 public interface ReportGenerator {
-    public void generateReport(TreeSet<Archive> jarArchives);
+    public void generateReport(TreeSet<Archive> archives);
+    public void generateDiffReport(TreeSet<Archive> archives, boolean ignoreClassVersion, boolean suppressArchiveReport);
 }

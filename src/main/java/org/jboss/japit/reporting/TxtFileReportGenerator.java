@@ -23,6 +23,9 @@ package org.jboss.japit.reporting;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.util.TreeSet;
 import org.jboss.japit.core.Archive;
@@ -52,7 +55,28 @@ public class TxtFileReportGenerator implements ReportGenerator {
             System.out.println(outputFile.getPath() + " was generated");
         } catch (FileNotFoundException ex) {
             System.err.println("Exception when creating report");
-            ex.printStackTrace();
+            ex.printStackTrace(System.err);
+        }
+    }
+
+    public void generateDiffReport(TreeSet<Archive> archives, boolean ignoreClassVersion, boolean suppressArchiveReport) {
+        try {
+            FileOutputStream fos = new FileOutputStream(outputFile);
+            PrintStream out = new PrintStream(fos, true);
+
+            if (!suppressArchiveReport) {
+                for (Archive archive : archives) {
+                    out.println(archive);
+                }
+            }
+            TextFactory.generateTextDiff(out, archives, ignoreClassVersion);
+            
+            out.close();
+            fos.close();
+            System.out.println(outputFile.getPath() + " was generated");
+        } catch (IOException ex) {
+            System.err.println("Exception when creating report");
+            ex.printStackTrace(System.err);
         }
     }
 }

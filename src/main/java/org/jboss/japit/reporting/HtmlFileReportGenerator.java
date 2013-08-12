@@ -54,4 +54,8 @@ class HtmlFileReportGenerator implements ReportGenerator {
         System.out.println("HTML report in " + htmlOutputDir.getPath() + " was generated");
 
     }
+
+    public void generateDiffReport(TreeSet<Archive> archives, boolean ignoreClassVersion, boolean suppressArchiveReport) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }

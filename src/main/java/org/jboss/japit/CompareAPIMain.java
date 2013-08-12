@@ -25,11 +25,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.TreeMap;
 import java.util.TreeSet;
 import org.jboss.japit.analyser.JarAnalyser;
 import org.jboss.japit.core.Archive;
-import org.jboss.japit.core.ClassDetails;
 import org.jboss.japit.core.JarArchive;
 import org.jboss.japit.reporting.Reporting;
 import org.kohsuke.args4j.CmdLineException;
@@ -48,7 +46,6 @@ public class CompareAPIMain {
     public static void main(String[] args) throws IOException {
         new CompareAPIMain().checkOptions(args);
     }
-    private boolean failCalled;
 
     public void checkOptions(String[] args) throws IOException {
         CompareAPIMainOptions options = new CompareAPIMainOptions();
@@ -93,112 +90,14 @@ public class CompareAPIMain {
 
         TreeSet<Archive> jarArchives = JarAnalyser.analyseJars(inputFiles, options.getSelectedFQCN());
 
-//        Reporting.generateDiffReports(jarArchives, options.isTextOutputDisbled(), options.getTxtOutputDir(), 
-//                options.getHtmlOutputDir(), options.isIgnoreClassVersion(), options.isSuppressArchiveReport());
-
-        JarArchive first = (JarArchive) jarArchives.pollFirst();
-        JarArchive second = (JarArchive) jarArchives.pollFirst();
-
-        System.out.println("First jar: " + first.getFilePath());
-        System.out.println("Second jar: " + second.getFilePath());
-        System.out.println();
-        System.out.println("Classes count: " + first.getClasses().size() + " vs. " + second.getClasses().size());
-        System.out.println();
-
-        TreeMap<String, ClassDetails> firstJarClassesMap = new TreeMap<String, ClassDetails>();
-        for (ClassDetails firstJarClass : first.getClasses()) {
-            firstJarClassesMap.put(firstJarClass.getClassName(), firstJarClass);
+        if (! (jarArchives.first() instanceof JarArchive)) {
+             throw new UnsupportedOperationException("Can't generate reports, "
+                    + jarArchives.first().getClass().getCanonicalName()
+                    + " is not supported yet.");
         }
-        for (ClassDetails secondJarClass : second.getClasses()) {
-            System.out.println(secondJarClass.getClassName() + ":");
-            failCalled = false;
-
-            ClassDetails firstJarClass = null;
-            try {
-                firstJarClass = firstJarClassesMap.remove(secondJarClass.getClassName());
-                if (firstJarClass == null) {
-                    fail("class doesn't exist in first jar");
-                    continue;
-                }
-            } catch (Exception e) {
-                fail("class doesn't exist in first jar");
-                continue;
-            }
-
-//            can be suppressed by option - ignore class version
-//            if (firstJarClass.getClassVersion() != secondJarClass.getClassVersion()) {
-//                fail("class version doesn't match: " + firstJarClass.getClassVersion() + " vs. " + secondJarClass.getClassVersion());
-//            }
-
-            // remove from report diff
-//            if (firstJarClass.getReferencedClasses() != secondJarClass.getReferencedClasses()) {
-//                fail("referenced classes doesn't match: " + firstJarClass.getReferencedClasses() + " vs. " + secondJarClass.getReferencedClasses());
-//            }
-
-            if (firstJarClass.getMethodsCount() != secondJarClass.getMethodsCount()) {
-                fail("methods count doesn't match: " + firstJarClass.getMethodsCount() + " vs. " + secondJarClass.getMethodsCount());
-            }
-
-            if (firstJarClass.getDeclaredMethodsCount() != secondJarClass.getDeclaredMethodsCount()) {
-                fail("declared methods count doesn't match: " + firstJarClass.getDeclaredMethodsCount() + " vs. " + secondJarClass.getDeclaredMethodsCount());
-            }
-
-            if (firstJarClass.getFieldsCount() != secondJarClass.getFieldsCount()) {
-                fail("fields count doesn't match: " + firstJarClass.getFieldsCount() + " vs. " + secondJarClass.getFieldsCount());
-            }
-
-            if (firstJarClass.getDeclaredFieldsCount() != secondJarClass.getDeclaredFieldsCount()) {
-                fail("declared fields count doesn't match: " + firstJarClass.getDeclaredFieldsCount() + " vs. " + secondJarClass.getDeclaredFieldsCount());
-            }
-            
-            
-            if (! firstJarClass.getSuperclassName().equals(secondJarClass.getSuperclassName())) {
-                fail("super class name doesn't match: " + firstJarClass.getSuperclassName() + " vs. " + secondJarClass.getSuperclassName());
-            }
-            if (! firstJarClass.getOriginalJavaFile().equals(secondJarClass.getOriginalJavaFile())) {
-                fail("original java file doesn't match: " + firstJarClass.getOriginalJavaFile() + " vs. " + secondJarClass.getOriginalJavaFile());
-            }
-            
-            for (String firstJarClassMethod : firstJarClass.getMethods()) {
-                if (! secondJarClass.getMethods().contains(firstJarClassMethod)) {
-                    fail("second jar doesn't contain method " + firstJarClassMethod);
-                }
-            }
-            for (String secondJarClassMethod : secondJarClass.getMethods()) {
-                if (! firstJarClass.getMethods().contains(secondJarClassMethod)) {
-                    fail("first jar doesn't contain method " + secondJarClassMethod);
-                }
-            }
-            
-            for (String firstJarClassField : firstJarClass.getFields()) {
-                if (! secondJarClass.getFields().contains(firstJarClassField)) {
-                    fail("second jar doesn't contain field " + firstJarClassField);
-                }
-            }
-            for (String secondJarClassField : secondJarClass.getFields()) {
-                if (! firstJarClass.getFields().contains(secondJarClassField)) {
-                    fail("first jar doesn't contain field " + secondJarClassField);
-                }
-            }
-
-            if (!failCalled) {
-                ok();
-            }
-        }
-        if (firstJarClassesMap.size() > 0) {
-            for (ClassDetails firstJarClass : firstJarClassesMap.values()) {
-                System.out.println(firstJarClass.getClassName() + ":");
-                fail("class doesn't exist in second jar");
-            }
-        }
-    }
-
-    private void fail(String details) {
-        System.out.println("  FAIL  --  " + details);
-        failCalled = true;
-    }
-
-    private void ok() {
-        System.out.println("  OK");
+        
+        Reporting.generateDiffReports(jarArchives, options.isTextOutputDisbled(), options.getTxtOutputDir(), 
+                options.getHtmlOutputDir(), options.isIgnoreClassVersion(), options.isSuppressArchiveReport());
+   
     }
 }

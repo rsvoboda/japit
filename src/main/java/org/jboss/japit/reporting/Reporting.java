@@ -22,8 +22,6 @@
 package org.jboss.japit.reporting;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.TreeSet;
 import org.jboss.japit.core.Archive;
 
@@ -35,8 +33,6 @@ public class Reporting {
 
     public static void generateReports(TreeSet<Archive> archives, boolean isTextOutputDisbled, File txtOutputDir, File htmlOutputDir) {
 
-        List<ReportGenerator> generators = new ArrayList<ReportGenerator>();
-        
         if (!isTextOutputDisbled)  {
             new TextReportGenerator().generateReport(archives);
         }
@@ -48,10 +44,22 @@ public class Reporting {
         if (htmlOutputDir != null) {
             new HtmlFileReportGenerator(htmlOutputDir).generateReport(archives);
         }
-        
-        for (ReportGenerator generator : generators) {
-            generator.generateReport(archives);
+    }
+    
+    public static void generateDiffReports(TreeSet<Archive> archives, boolean isTextOutputDisbled, 
+            File txtOutputDir, File htmlOutputDir, boolean ignoreClassVersion, boolean suppressArchiveReport) {
+
+        if (!isTextOutputDisbled)  {
+            new TextReportGenerator().generateDiffReport(archives, ignoreClassVersion, suppressArchiveReport);
         }
 
+        if (txtOutputDir != null) {
+            new TxtFileReportGenerator(new File(txtOutputDir, "report.txt")).generateDiffReport(archives, ignoreClassVersion, suppressArchiveReport);
+        }
+
+        if (htmlOutputDir != null) {
+            new HtmlFileReportGenerator(htmlOutputDir).generateDiffReport(archives, ignoreClassVersion, suppressArchiveReport);
+        }
+        
     }
 }

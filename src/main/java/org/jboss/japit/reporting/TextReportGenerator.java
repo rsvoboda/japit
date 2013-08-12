@@ -19,7 +19,6 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-
 package org.jboss.japit.reporting;
 
 import java.util.TreeSet;
@@ -29,7 +28,7 @@ import org.jboss.japit.core.Archive;
  *
  * @author Rostislav Svoboda
  */
-public class TextReportGenerator implements ReportGenerator{
+public class TextReportGenerator implements ReportGenerator {
 
     public void generateReport(TreeSet<Archive> archives) {
         for (Archive archive : archives) {
@@ -37,4 +36,12 @@ public class TextReportGenerator implements ReportGenerator{
         }
     }
 
+    public void generateDiffReport(TreeSet<Archive> archives, boolean ignoreClassVersion, boolean suppressArchiveReport) {
+        if (!suppressArchiveReport) {
+            for (Archive archive : archives) {
+                System.out.println(archive);
+            }
+        }
+        TextFactory.generateTextDiff(System.out, archives, ignoreClassVersion);
+    }
 }
