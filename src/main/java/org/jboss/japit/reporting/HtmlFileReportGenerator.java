@@ -45,7 +45,7 @@ class HtmlFileReportGenerator implements ReportGenerator {
         if (archives.first() instanceof JarArchive) {
             HtmlFactory.generateArchiveReport(archives, htmlOutputDir);
             HtmlFactory.generateCSS(htmlOutputDir);
-            HtmlFactory.generateIndex(archives, htmlOutputDir);
+            HtmlFactory.generateIndex(archives, htmlOutputDir, false, false);
         } else {
             throw new UnsupportedOperationException("Can't generate HTML report, "
                     + archives.first().getClass().getCanonicalName()
@@ -56,6 +56,13 @@ class HtmlFileReportGenerator implements ReportGenerator {
     }
 
     public void generateDiffReport(TreeSet<Archive> archives, boolean ignoreClassVersion, boolean suppressArchiveReport) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        if (!suppressArchiveReport) {
+            HtmlFactory.generateArchiveReport(archives, htmlOutputDir);
+        }
+        HtmlFactory.generateCSS(htmlOutputDir);
+        HtmlFactory.generateDiffReportFile(archives, htmlOutputDir, ignoreClassVersion, suppressArchiveReport);
+        HtmlFactory.generateIndex(archives, htmlOutputDir, true, suppressArchiveReport);
+        System.out.println("HTML report in " + htmlOutputDir.getPath() + " was generated");
+
     }
 }

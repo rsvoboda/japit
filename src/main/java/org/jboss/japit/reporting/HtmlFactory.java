@@ -28,6 +28,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Iterator;
+import java.util.TreeMap;
 import java.util.TreeSet;
 import org.jboss.japit.Application;
 import org.jboss.japit.core.Archive;
@@ -41,11 +43,13 @@ import org.jboss.japit.core.JarArchive;
 public class HtmlFactory {
 
     private static final String NEW_LINE = System.getProperty("line.separator");
+    private static boolean failCalled;
 
     private HtmlFactory() {
     }
 
-    public static void generateIndex(TreeSet<Archive> archives, File outputDir) {
+    public static void generateIndex(TreeSet<Archive> archives, File outputDir,
+            boolean includeDiff, boolean suppressArchiveReport) {
         try {
             FileWriter fw = new FileWriter(new File(outputDir, "index.html"));
             BufferedWriter bw = new BufferedWriter(fw, 8192);
@@ -53,17 +57,29 @@ public class HtmlFactory {
             generateHeader(bw, "Index");
 
             bw.write("<h1>" + Application.FULL_VERSION + "</h1>" + NEW_LINE);
-            bw.write("<h2>Archives: </h2>" + NEW_LINE);
-            bw.write("<ul>" + NEW_LINE);
-            for (Archive archive : archives) {
-                bw.write("<li><a href=\"" + convertPathForFileName(archive.getFilePath()) + ".html\">"
-                        + archive.getFileName() + "</a> - " + archive.getFilePath());
-                bw.write(" (" + getArchiveReportSize(outputDir, archive) + ")</li>" + NEW_LINE);
+            if (!suppressArchiveReport) {
+                bw.write("<h2>Archives: </h2>" + NEW_LINE);
+                bw.write("<ul>" + NEW_LINE);
+                for (Archive archive : archives) {
+                    String targetFileName = convertPathForFileName(archive.getFilePath()) + ".html";
+                    bw.write("<li><a href=\"" + targetFileName + "\">"
+                            + archive.getFileName() + "</a> - " + archive.getFilePath());
+                    bw.write(" (" + getArchiveReportSize(outputDir, targetFileName) + ")</li>" + NEW_LINE);
+                }
+                bw.write("</ul>" + NEW_LINE);
             }
-            bw.write("</ul>" + NEW_LINE);
 
-            if (archives.size() < 2) {
-                generateArchiveReportBody(bw, (JarArchive) archives.first());  // check done in HtmlFileReportGenerator
+            if (includeDiff) {
+                bw.write("<h2>Diffs: </h2>" + NEW_LINE);
+                bw.write("<ul>" + NEW_LINE);
+                Iterator<Archive> iter = archives.iterator();
+                JarArchive first = (JarArchive) iter.next();
+                JarArchive second = (JarArchive) iter.next();
+                String targetFileName = convertPathForFileName(first.getFilePath()) + "-diff.html";
+                bw.write("<li><a href=\"" + targetFileName + "\">"
+                        + first.getFileName() + "</a> - " + first.getFilePath() + " vs. " + second.getFilePath());
+                bw.write(" (" + getArchiveReportSize(outputDir, targetFileName) + ")</li>" + NEW_LINE);
+                bw.write("</ul>" + NEW_LINE);
             }
 
             generateFooter(bw);
@@ -74,6 +90,140 @@ public class HtmlFactory {
             System.err.println("GenerateIndex: " + e.getMessage());
             e.printStackTrace(System.err);
         }
+    }
+
+    public static void generateDiffReportFile(TreeSet<Archive> archives, File outputDir, boolean ignoreClassVersion, boolean suppressArchiveReport) {
+        Iterator<Archive> iter = archives.iterator();
+        JarArchive first = (JarArchive) iter.next();
+        JarArchive second = (JarArchive) iter.next();
+        String targetFileName = convertPathForFileName(first.getFilePath()) + "-diff.html";
+
+        try {
+            FileWriter fw = new FileWriter(new File(outputDir, targetFileName));
+            BufferedWriter bw = new BufferedWriter(fw, 8192);
+
+            generateHeader(bw, first.getFileName());
+            
+            generateDiffReportBody(bw, first, second, ignoreClassVersion);
+
+            bw.write("</table>" + NEW_LINE);
+            bw.write("<br/>" + NEW_LINE);
+
+            generateFooter(bw);
+
+            bw.flush();
+            bw.close();
+        } catch (Exception e) {
+            System.err.println("generateArchiveReport: " + e.getMessage());
+            e.printStackTrace(System.err);
+        }
+    }
+
+    private static void generateDiffReportBody(BufferedWriter bw, JarArchive first, JarArchive second, boolean ignoreClassVersion) throws IOException {
+        bw.write("<h1>" + first.getFileName() + " vs. " + second.getFileName() + "</h1>" + NEW_LINE);
+        bw.write("<h2>" + first.getFilePath() + " vs. " + second.getFilePath() + "</h2>" + NEW_LINE);
+        bw.write("<a href=\"index.html\">Main</a>" + NEW_LINE);
+        bw.write("<br/><br/>" + NEW_LINE);
+
+        bw.write("First jar: " + first.getFilePath() + "<br/>" + NEW_LINE);
+        bw.write("Second jar: " + second.getFilePath() + "<br/>" + NEW_LINE);
+        bw.write("<br/>" + NEW_LINE);
+        bw.write("Compared classes count: " + first.getClasses().size() + " vs. " + second.getClasses().size() + "<br/>" + NEW_LINE);
+        if (ignoreClassVersion) {
+            bw.write("Class Version ignored in comparison<br/>" + NEW_LINE);
+        }
+        bw.write("<br/>" + NEW_LINE);
+
+        TreeMap<String, ClassDetails> firstJarClassesMap = new TreeMap<String, ClassDetails>();
+        for (ClassDetails firstJarClass : first.getClasses()) {
+            firstJarClassesMap.put(firstJarClass.getClassName(), firstJarClass);
+        }
+        for (ClassDetails secondJarClass : second.getClasses()) {
+            bw.write("<a name=\"" + secondJarClass.getClassName() + "\"></a> " + NEW_LINE);
+            bw.write("<div class=\"class-name\">" + secondJarClass.getClassName() + "</div>" + NEW_LINE);
+            failCalled = false;
+
+            ClassDetails firstJarClass = null;
+            try {
+                firstJarClass = firstJarClassesMap.remove(secondJarClass.getClassName());
+                if (firstJarClass == null) {
+                    fail(bw, "class doesn't exist in first jar");
+                    continue;
+                }
+            } catch (Exception e) {
+                fail(bw, "class doesn't exist in first jar");
+                continue;
+            }
+
+            if (!ignoreClassVersion && firstJarClass.getClassVersion() != secondJarClass.getClassVersion()) {
+                fail(bw, "class version doesn't match: " + firstJarClass.getClassVersion() + " vs. " + secondJarClass.getClassVersion());
+            }
+
+            if (firstJarClass.getMethodsCount() != secondJarClass.getMethodsCount()) {
+                fail(bw, "methods count doesn't match: " + firstJarClass.getMethodsCount() + " vs. " + secondJarClass.getMethodsCount());
+            }
+
+            if (firstJarClass.getDeclaredMethodsCount() != secondJarClass.getDeclaredMethodsCount()) {
+                fail(bw, "declared methods count doesn't match: " + firstJarClass.getDeclaredMethodsCount() + " vs. " + secondJarClass.getDeclaredMethodsCount());
+            }
+
+            if (firstJarClass.getFieldsCount() != secondJarClass.getFieldsCount()) {
+                fail(bw, "fields count doesn't match: " + firstJarClass.getFieldsCount() + " vs. " + secondJarClass.getFieldsCount());
+            }
+
+            if (firstJarClass.getDeclaredFieldsCount() != secondJarClass.getDeclaredFieldsCount()) {
+                fail(bw, "declared fields count doesn't match: " + firstJarClass.getDeclaredFieldsCount() + " vs. " + secondJarClass.getDeclaredFieldsCount());
+            }
+
+            if (!firstJarClass.getSuperclassName().equals(secondJarClass.getSuperclassName())) {
+                fail(bw, "super class name doesn't match: " + firstJarClass.getSuperclassName() + " vs. " + secondJarClass.getSuperclassName());
+            }
+            if (!firstJarClass.getOriginalJavaFile().equals(secondJarClass.getOriginalJavaFile())) {
+                fail(bw, "original java file doesn't match: " + firstJarClass.getOriginalJavaFile() + " vs. " + secondJarClass.getOriginalJavaFile());
+            }
+
+            for (String firstJarClassMethod : firstJarClass.getMethods()) {
+                if (!secondJarClass.getMethods().contains(firstJarClassMethod)) {
+                    fail(bw, "second jar doesn't contain method " + firstJarClassMethod);
+                }
+            }
+            for (String secondJarClassMethod : secondJarClass.getMethods()) {
+                if (!firstJarClass.getMethods().contains(secondJarClassMethod)) {
+                    fail(bw, "first jar doesn't contain method " + secondJarClassMethod);
+                }
+            }
+
+            for (String firstJarClassField : firstJarClass.getFields()) {
+                if (!secondJarClass.getFields().contains(firstJarClassField)) {
+                    fail(bw, "second jar doesn't contain field " + firstJarClassField);
+                }
+            }
+            for (String secondJarClassField : secondJarClass.getFields()) {
+                if (!firstJarClass.getFields().contains(secondJarClassField)) {
+                    fail(bw, "first jar doesn't contain field " + secondJarClassField);
+                }
+            }
+
+            if (!failCalled) {
+                ok(bw);
+            }
+        }
+        if (firstJarClassesMap.size() > 0) {
+            for (ClassDetails firstJarClass : firstJarClassesMap.values()) {
+                bw.write("<div class=\"class-name\">" + firstJarClass.getClassName() + "</div>" + NEW_LINE);
+                fail(bw, "class doesn't exist in second jar");
+            }
+        }
+    }
+
+    private static void fail(BufferedWriter bw, String details) throws IOException {
+        bw.write("<div> <span class=\"fail\">FAIL</span> -- " + details
+                + " </div>" + NEW_LINE);
+        failCalled = true;
+    }
+
+    private static void ok(BufferedWriter bw) throws IOException {
+        bw.write("<div> <span class=\"ok\">OK</span></div>" + NEW_LINE);
     }
 
     public static void generateArchiveReport(TreeSet<Archive> archives, File outputDir) {
@@ -104,8 +254,8 @@ public class HtmlFactory {
         return path.replaceFirst("/", "").replace("/", "-").replace(":\\", "-").replace("\\", "-").replace(" ", "-");
     }
 
-    private static String getArchiveReportSize(File outputDir, Archive archive) {
-        File file = new File(outputDir, convertPathForFileName(archive.getFilePath()) + ".html");
+    private static String getArchiveReportSize(File outputDir, String fileName) {
+        File file = new File(outputDir, fileName);
         return ((file.length() / 1024) + 1) + "KB";
     }
 
@@ -150,34 +300,34 @@ public class HtmlFactory {
             bw.write("  </tr>" + NEW_LINE);
 
             bw.write("  <tr class=\"rowodd\">" + NEW_LINE);
-            bw.write("     <td class=\"heading\">Class version</td>" + NEW_LINE);
+            bw.write("     <td class=\"row-heading\">Class version</td>" + NEW_LINE);
             bw.write("     <td>" + classDetails.getClassVersion() + "</td>" + NEW_LINE);
             bw.write("  </tr>" + NEW_LINE);
             bw.write("  <tr class=\"rowodd\">" + NEW_LINE);
-            bw.write("     <td class=\"heading\">Original Java file</td>" + NEW_LINE);
+            bw.write("     <td class=\"row-heading\">Original Java file</td>" + NEW_LINE);
             bw.write("     <td>" + classDetails.getOriginalJavaFile() + "</td>" + NEW_LINE);
             bw.write("  </tr>" + NEW_LINE);
             bw.write("  <tr class=\"rowodd\">" + NEW_LINE);
-            bw.write("     <td class=\"heading\">Superclass file</td>" + NEW_LINE);
+            bw.write("     <td class=\"row-heading\">Superclass file</td>" + NEW_LINE);
             bw.write("     <td>" + classDetails.getSuperclassName() + "</td>" + NEW_LINE);
             bw.write("  </tr>" + NEW_LINE);
             bw.write("  <tr class=\"rowodd\">" + NEW_LINE);
-            bw.write("     <td class=\"heading\">Referenced classes count</td>" + NEW_LINE);
+            bw.write("     <td class=\"row-heading\">Referenced classes count</td>" + NEW_LINE);
             bw.write("     <td>" + classDetails.getReferencedClasses() + "</td>" + NEW_LINE);
             bw.write("  </tr>" + NEW_LINE);
 
             bw.write("  <tr class=\"roweven\">" + NEW_LINE);
-            bw.write("     <td class=\"heading\">Methods / Declared Methods count</td>" + NEW_LINE);
+            bw.write("     <td class=\"row-heading\">Methods / Declared Methods count</td>" + NEW_LINE);
             bw.write("     <td>" + classDetails.getMethodsCount() + " / " + classDetails.getDeclaredMethodsCount() + "</td>" + NEW_LINE);
             bw.write("  </tr>" + NEW_LINE);
             bw.write("  <tr class=\"roweven\">" + NEW_LINE);
-            bw.write("     <td class=\"heading\">Fields / Declared Fields count</td>" + NEW_LINE);
+            bw.write("     <td class=\"row-heading\">Fields / Declared Fields count</td>" + NEW_LINE);
             bw.write("     <td>" + classDetails.getFieldsCount() + " / " + classDetails.getDeclaredFieldsCount() + "</td>" + NEW_LINE);
             bw.write("  </tr>" + NEW_LINE);
 
             if (classDetails.getMethodsCount() > 0) {
                 bw.write("  <tr class=\"rowodd\">" + NEW_LINE);
-                bw.write("     <td class=\"heading\">Methods</td>" + NEW_LINE);
+                bw.write("     <td class=\"row-heading\">Methods</td>" + NEW_LINE);
                 String mString = "";
                 for (String method : classDetails.getMethods()) {
                     mString = mString + method + "<br/>";
@@ -189,7 +339,7 @@ public class HtmlFactory {
             }
             if (classDetails.getFieldsCount() > 0) {
                 bw.write("  <tr class=\"roweven\">" + NEW_LINE);
-                bw.write("     <td class=\"heading\">Fields</td>" + NEW_LINE);
+                bw.write("     <td class=\"row-heading\">Fields</td>" + NEW_LINE);
                 String fString = "";
                 for (String field : classDetails.getFields()) {
                     fString = fString + field + "\n";
@@ -210,10 +360,12 @@ public class HtmlFactory {
 
         InputStream is = null;
         OutputStream os = null;
-        try {
-            is = HtmlFactory.class.getClassLoader().getResourceAsStream("style.css");
-            os = new FileOutputStream(new File(outputDir, "style.css"));
 
+
+        try {
+            is = HtmlFactory.class
+                    .getClassLoader().getResourceAsStream("style.css");
+            os = new FileOutputStream(new File(outputDir, "style.css"));
             while ((bytesRead = is.read(buffer)) != -1) {
                 os.write(buffer, 0, bytesRead);
             }
