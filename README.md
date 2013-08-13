@@ -3,6 +3,15 @@ JAPIT
 
 JavaAPITools - set of utilities to list, compare public APIs and other details for available classes and jar files
 
+* org.jboss.japit.ListAPIMain -- list public methods, fields, class details for specified jar files
+* org.jboss.japit.CompareAPIMain -- compare two jar files on public methods, fields and class details
+
+Output:
+* console
+* TXT file
+* HTML files
+
+
 Building
 -------------------
 
@@ -33,5 +42,21 @@ org.jboss.japit.ListAPIMain
  -h (--html-output) DIR        : Enable HTML output and set output directory
  -t (--txt-output) DIR         : Enable TXT output and set output directory
 
-  Example: java org.jboss.japit.ListAPIMain -c (--class) FQCN -d (--disable-console-output) -h (--html-output) DIR -t (--txt-output) DIR  JarFile1 [JarFile2 ...]
+  Example: java org.jboss.japit.ListAPIMain -c (--class) FQCN -d (--disable-console-output) -h 
+  (--html-output) DIR -t (--txt-output) DIR  JarFile1 [JarFile2 ...]
+```
+
+org.jboss.japit.CompareAPIMain
+------------------------------------------
+```
+ -c (--class) FQCN              : List API only for specified class
+ -d (--disable-console-output)  : Disable text output to the console
+ -h (--html-output) DIR         : Enable HTML output and set output directory
+ -i (--ignore-class-version)    : Ignore class version in comparison
+ -s (--suppress-archive-report) : Suppress archive reports in output
+ -t (--txt-output) DIR          : Enable TXT output and set output directory
+
+  Example: java org.jboss.japit.CompareAPIMain -c (--class) FQCN -d (--disable-console-output) -h 
+  (--html-output) DIR -i (--ignore-class-version) -s (--suppress-archive-report) -t (--txt-output) DIR
+  FirstJarFile SecondJarFile
 ```
