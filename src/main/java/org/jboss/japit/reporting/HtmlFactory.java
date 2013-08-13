@@ -103,8 +103,8 @@ public class HtmlFactory {
             BufferedWriter bw = new BufferedWriter(fw, 8192);
 
             generateHeader(bw, first.getFileName());
-            
-            generateDiffReportBody(bw, first, second, ignoreClassVersion);
+
+            generateDiffReportBody(bw, first, second, ignoreClassVersion, suppressArchiveReport);
 
             bw.write("</table>" + NEW_LINE);
             bw.write("<br/>" + NEW_LINE);
@@ -119,7 +119,8 @@ public class HtmlFactory {
         }
     }
 
-    private static void generateDiffReportBody(BufferedWriter bw, JarArchive first, JarArchive second, boolean ignoreClassVersion) throws IOException {
+    private static void generateDiffReportBody(BufferedWriter bw, JarArchive first, JarArchive second,
+            boolean ignoreClassVersion, boolean suppressArchiveReport) throws IOException {
         bw.write("<h1>" + first.getFileName() + " vs. " + second.getFileName() + "</h1>" + NEW_LINE);
         bw.write("<h2>" + first.getFilePath() + " vs. " + second.getFilePath() + "</h2>" + NEW_LINE);
         bw.write("<a href=\"index.html\">Main</a>" + NEW_LINE);
@@ -140,7 +141,19 @@ public class HtmlFactory {
         }
         for (ClassDetails secondJarClass : second.getClasses()) {
             bw.write("<a name=\"" + secondJarClass.getClassName() + "\"></a> " + NEW_LINE);
-            bw.write("<div class=\"class-name\">" + secondJarClass.getClassName() + "</div>" + NEW_LINE);
+            if (suppressArchiveReport) {
+                bw.write("<div class=\"class-name\">" + secondJarClass.getClassName() + "</div>" + NEW_LINE);
+            } else {
+                String firstArchiveReportFileName = convertPathForFileName(first.getFilePath()) + ".html";
+                String secondArchiveReportFileName = convertPathForFileName(second.getFilePath()) + ".html";
+                bw.write("<div class=\"class-name\">" + secondJarClass.getClassName()
+                        + "&nbsp;&nbsp;"
+                        + "<a href=\"" + firstArchiveReportFileName + "#" + secondJarClass.getClassName() + "\">First jar</a>"
+                        + "&nbsp;&nbsp;"
+                        + "<a href=\"" + secondArchiveReportFileName + "#" + secondJarClass.getClassName() + "\">Second jar</a>"
+                        + "</div>" + NEW_LINE);
+            }
+
             failCalled = false;
 
             ClassDetails firstJarClass = null;
