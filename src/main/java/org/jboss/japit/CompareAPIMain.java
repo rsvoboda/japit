@@ -25,7 +25,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.TreeSet;
 import org.jboss.japit.analyser.JarAnalyser;
 import org.jboss.japit.core.Archive;
 import org.jboss.japit.core.JarArchive;
@@ -59,8 +58,8 @@ public class CompareAPIMain {
             if (options.getArguments().isEmpty()) {
                 throw new CmdLineException(parser, "No argument is given");
             }
-            if (options.getArguments().size() != 2) {
-                throw new CmdLineException(parser, "Two arguments are expected");
+            if (options.getArguments().size() % 2 != 0) {
+                throw new CmdLineException(parser, "Even number of arguments is expected");
             }
             if (options.getHtmlOutputDir() != null && options.getHtmlOutputDir().isFile()) {
                 throw new CmdLineException(parser, "HTML output must point to the directory");
@@ -82,22 +81,22 @@ public class CompareAPIMain {
             System.err.println(e.getMessage());
             parser.printUsage(System.err);
             System.err.println();
-            System.err.println("  Example: java " + this.getClass().getCanonicalName() + parser.printExample(OptionHandlerFilter.ALL) 
-                    + "  FirstJarFile SecondJarFile");
+            System.err.println("  Example: java " + this.getClass().getCanonicalName() + parser.printExample(OptionHandlerFilter.ALL)
+                    + "  FirstPairFirstJar FirstPairSecondJar [SecondPairFirstJar SecondPairSecondJar ...]");
 
             return;
         }
 
-        TreeSet<Archive> jarArchives = JarAnalyser.analyseJars(inputFiles, options.getSelectedFQCN());
+        List<Archive> jarArchives = JarAnalyser.analyseJars(inputFiles, options.getSelectedFQCN());
 
-        if (! (jarArchives.first() instanceof JarArchive)) {
-             throw new UnsupportedOperationException("Can't generate reports, "
-                    + jarArchives.first().getClass().getCanonicalName()
+        if (!(jarArchives.get(0) instanceof JarArchive)) {
+            throw new UnsupportedOperationException("Can't generate reports, "
+                    + jarArchives.get(0).getClass().getCanonicalName()
                     + " is not supported yet.");
         }
-        
-        Reporting.generateDiffReports(jarArchives, options.isTextOutputDisbled(), options.getTxtOutputDir(), 
+
+        Reporting.generateDiffReports(jarArchives, options.isTextOutputDisbled(), options.getTxtOutputDir(),
                 options.getHtmlOutputDir(), options.isIgnoreClassVersion(), options.isSuppressArchiveReport());
-   
+
     }
 }

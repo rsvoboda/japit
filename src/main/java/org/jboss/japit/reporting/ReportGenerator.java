@@ -21,7 +21,7 @@
  */
 package org.jboss.japit.reporting;
 
-import java.util.TreeSet;
+import java.util.Collection;
 import org.jboss.japit.core.Archive;
 
 /**
@@ -30,7 +30,7 @@ import org.jboss.japit.core.Archive;
  */
 public interface ReportGenerator {
 
-    public void generateReport(TreeSet<Archive> archives);
+    public void generateReport(Collection<Archive> archives);
 
-    public void generateDiffReport(TreeSet<Archive> archives, boolean ignoreClassVersion, boolean suppressArchiveReport);
+    public void generateDiffReport(Collection<Archive> archives, boolean ignoreClassVersion, boolean suppressArchiveReport);
 }

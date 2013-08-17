@@ -22,9 +22,9 @@
 package org.jboss.japit.reporting;
 
 import java.io.PrintStream;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.TreeMap;
-import java.util.TreeSet;
 import org.jboss.japit.core.Archive;
 import org.jboss.japit.core.ClassDetails;
 import org.jboss.japit.core.JarArchive;
@@ -40,7 +40,7 @@ public class TextFactory {
     private TextFactory() {
     }
 
-    public static void generateTextDiff(PrintStream out, TreeSet<Archive> archives, boolean ignoreClassVersion) {
+    public static void generateTextDiff(PrintStream out, Collection<Archive> archives, boolean ignoreClassVersion) {
         Iterator<Archive> iter = archives.iterator();
         JarArchive first = (JarArchive) iter.next();
         JarArchive second = (JarArchive) iter.next();

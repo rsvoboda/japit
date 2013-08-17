@@ -21,6 +21,7 @@
  */
 package org.jboss.japit.reporting;
 
+import java.util.Collection;
 import java.util.TreeSet;
 import org.jboss.japit.core.Archive;
 
@@ -30,17 +31,16 @@ import org.jboss.japit.core.Archive;
  */
 public class TextReportGenerator implements ReportGenerator {
 
-    public void generateReport(TreeSet<Archive> archives) {
+    public void generateReport(Collection<Archive> archives) {
         for (Archive archive : archives) {
             System.out.println(archive);
         }
     }
 
-    public void generateDiffReport(TreeSet<Archive> archives, boolean ignoreClassVersion, boolean suppressArchiveReport) {
+    public void generateDiffReport(Collection<Archive> archives, boolean ignoreClassVersion, boolean suppressArchiveReport) {
         if (!suppressArchiveReport) {
-            for (Archive archive : archives) {
-                System.out.println(archive);
-            }
+            TreeSet<Archive> sortedArchives = new TreeSet<Archive>(archives);
+            generateReport(sortedArchives);
         }
         TextFactory.generateTextDiff(System.out, archives, ignoreClassVersion);
     }

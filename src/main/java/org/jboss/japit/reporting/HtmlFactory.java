@@ -28,6 +28,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -48,7 +49,7 @@ public class HtmlFactory {
     private HtmlFactory() {
     }
 
-    public static void generateIndex(TreeSet<Archive> archives, File outputDir,
+    public static void generateIndex(Collection<Archive> archives, File outputDir,
             boolean includeDiff, boolean suppressArchiveReport) {
         try {
             FileWriter fw = new FileWriter(new File(outputDir, "index.html"));
@@ -60,7 +61,8 @@ public class HtmlFactory {
             if (!suppressArchiveReport) {
                 bw.write("<h2>Archives: </h2>" + NEW_LINE);
                 bw.write("<ul>" + NEW_LINE);
-                for (Archive archive : archives) {
+                TreeSet<Archive> sortedArchives = new TreeSet<Archive>(archives);
+                for (Archive archive : sortedArchives) {
                     String targetFileName = convertPathForFileName(archive.getFilePath()) + ".html";
                     bw.write("<li><a href=\"" + targetFileName + "\">"
                             + archive.getFileName() + "</a> - " + archive.getFilePath());
@@ -73,12 +75,16 @@ public class HtmlFactory {
                 bw.write("<h2>Diffs: </h2>" + NEW_LINE);
                 bw.write("<ul>" + NEW_LINE);
                 Iterator<Archive> iter = archives.iterator();
-                JarArchive first = (JarArchive) iter.next();
-                JarArchive second = (JarArchive) iter.next();
-                String targetFileName = convertPathForFileName(first.getFilePath()) + "-diff.html";
-                bw.write("<li><a href=\"" + targetFileName + "\">"
-                        + first.getFileName() + "</a> - " + first.getFilePath() + " vs. " + second.getFilePath());
-                bw.write(" (" + getArchiveReportSize(outputDir, targetFileName) + ")</li>" + NEW_LINE);
+                int counter = 0;
+                while (iter.hasNext()) {
+                    JarArchive first = (JarArchive) iter.next();
+                    JarArchive second = (JarArchive) iter.next();
+                    counter++;
+                    String targetFileName = convertPathForFileName(first.getFilePath()) + "-diff-" + counter + ".html";
+                    bw.write("<li><a href=\"" + targetFileName + "\">"
+                            + first.getFileName() + "</a> - " + first.getFilePath() + " vs. " + second.getFilePath());
+                    bw.write(" (" + getArchiveReportSize(outputDir, targetFileName) + ")</li>" + NEW_LINE);
+                }
                 bw.write("</ul>" + NEW_LINE);
             }
 
@@ -92,30 +98,34 @@ public class HtmlFactory {
         }
     }
 
-    public static void generateDiffReportFile(TreeSet<Archive> archives, File outputDir, boolean ignoreClassVersion, boolean suppressArchiveReport) {
+    public static void generateDiffReportFile(Collection<Archive> archives, File outputDir, boolean ignoreClassVersion, boolean suppressArchiveReport) {
         Iterator<Archive> iter = archives.iterator();
-        JarArchive first = (JarArchive) iter.next();
-        JarArchive second = (JarArchive) iter.next();
-        String targetFileName = convertPathForFileName(first.getFilePath()) + "-diff.html";
+        int counter = 0;
+        while (iter.hasNext()) {
+            JarArchive first = (JarArchive) iter.next();
+            JarArchive second = (JarArchive) iter.next();
+            counter++;
+            String targetFileName = convertPathForFileName(first.getFilePath()) + "-diff-" + counter + ".html";
 
-        try {
-            FileWriter fw = new FileWriter(new File(outputDir, targetFileName));
-            BufferedWriter bw = new BufferedWriter(fw, 8192);
+            try {
+                FileWriter fw = new FileWriter(new File(outputDir, targetFileName));
+                BufferedWriter bw = new BufferedWriter(fw, 8192);
 
-            generateHeader(bw, first.getFileName());
+                generateHeader(bw, first.getFileName());
 
-            generateDiffReportBody(bw, first, second, ignoreClassVersion, suppressArchiveReport);
+                generateDiffReportBody(bw, first, second, ignoreClassVersion, suppressArchiveReport);
 
-            bw.write("</table>" + NEW_LINE);
-            bw.write("<br/>" + NEW_LINE);
+                bw.write("</table>" + NEW_LINE);
+                bw.write("<br/>" + NEW_LINE);
 
-            generateFooter(bw);
+                generateFooter(bw);
 
-            bw.flush();
-            bw.close();
-        } catch (Exception e) {
-            System.err.println("generateArchiveReport: " + e.getMessage());
-            e.printStackTrace(System.err);
+                bw.flush();
+                bw.close();
+            } catch (Exception e) {
+                System.err.println("generateArchiveReport: " + e.getMessage());
+                e.printStackTrace(System.err);
+            }
         }
     }
 
@@ -239,7 +249,7 @@ public class HtmlFactory {
         bw.write("<div> <span class=\"ok\">OK</span></div>" + NEW_LINE);
     }
 
-    public static void generateArchiveReport(TreeSet<Archive> archives, File outputDir) {
+    public static void generateArchiveReport(Collection<Archive> archives, File outputDir) {
         for (Archive archive : archives) {
             try {
                 FileWriter fw = new FileWriter(new File(outputDir, convertPathForFileName(archive.getFilePath()) + ".html"));

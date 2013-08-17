@@ -27,6 +27,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
+import java.util.Collection;
 import java.util.TreeSet;
 import org.jboss.japit.core.Archive;
 
@@ -45,7 +46,7 @@ public class TxtFileReportGenerator implements ReportGenerator {
         }
     }
 
-    public void generateReport(TreeSet<Archive> archives) {
+    public void generateReport(Collection<Archive> archives) {
         try {
             PrintWriter out = new PrintWriter(outputFile);
             for (Archive archive : archives) {
@@ -59,18 +60,19 @@ public class TxtFileReportGenerator implements ReportGenerator {
         }
     }
 
-    public void generateDiffReport(TreeSet<Archive> archives, boolean ignoreClassVersion, boolean suppressArchiveReport) {
+    public void generateDiffReport(Collection<Archive> archives, boolean ignoreClassVersion, boolean suppressArchiveReport) {
         try {
             FileOutputStream fos = new FileOutputStream(outputFile);
             PrintStream out = new PrintStream(fos, true);
 
             if (!suppressArchiveReport) {
-                for (Archive archive : archives) {
+                TreeSet<Archive> sortedArchives = new TreeSet<Archive>(archives);
+                for (Archive archive : sortedArchives) {
                     out.println(archive);
                 }
             }
             TextFactory.generateTextDiff(out, archives, ignoreClassVersion);
-            
+
             out.close();
             fos.close();
             System.out.println(outputFile.getPath() + " was generated");

@@ -25,7 +25,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.TreeSet;
 import org.jboss.japit.analyser.JarAnalyser;
 import org.jboss.japit.core.Archive;
 import org.jboss.japit.reporting.Reporting;
@@ -83,7 +82,7 @@ public class ListAPIMain {
             return;
         }
 
-        TreeSet<Archive> jarArchives = JarAnalyser.analyseJars(inputFiles, options.getSelectedFQCN());
+        List<Archive> jarArchives = JarAnalyser.analyseJars(inputFiles, options.getSelectedFQCN());
 
         Reporting.generateReports(jarArchives, options.isTextOutputDisbled(), options.getTxtOutputDir(), options.getHtmlOutputDir());
 

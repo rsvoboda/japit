@@ -22,6 +22,7 @@
 package org.jboss.japit.reporting;
 
 import java.io.File;
+import java.util.Collection;
 import java.util.TreeSet;
 import org.jboss.japit.core.Archive;
 import org.jboss.japit.core.JarArchive;
@@ -41,23 +42,25 @@ class HtmlFileReportGenerator implements ReportGenerator {
         }
     }
 
-    public void generateReport(TreeSet<Archive> archives) {
-        if (archives.first() instanceof JarArchive) {
+    public void generateReport(Collection<Archive> archives) {
+        Archive firstArchive = archives.iterator().next();
+        if (firstArchive instanceof JarArchive) {
             HtmlFactory.generateArchiveReport(archives, htmlOutputDir);
             HtmlFactory.generateCSS(htmlOutputDir);
             HtmlFactory.generateIndex(archives, htmlOutputDir, false, false);
         } else {
             throw new UnsupportedOperationException("Can't generate HTML report, "
-                    + archives.first().getClass().getCanonicalName()
+                    + firstArchive.getClass().getCanonicalName()
                     + " is not supported yet.");
         }
         System.out.println("HTML report in " + htmlOutputDir.getPath() + " was generated");
 
     }
 
-    public void generateDiffReport(TreeSet<Archive> archives, boolean ignoreClassVersion, boolean suppressArchiveReport) {
+    public void generateDiffReport(Collection<Archive> archives, boolean ignoreClassVersion, boolean suppressArchiveReport) {
         if (!suppressArchiveReport) {
-            HtmlFactory.generateArchiveReport(archives, htmlOutputDir);
+            TreeSet<Archive> sortedArchives = new TreeSet<Archive>(archives);
+            HtmlFactory.generateArchiveReport(sortedArchives, htmlOutputDir);
         }
         HtmlFactory.generateCSS(htmlOutputDir);
         HtmlFactory.generateDiffReportFile(archives, htmlOutputDir, ignoreClassVersion, suppressArchiveReport);

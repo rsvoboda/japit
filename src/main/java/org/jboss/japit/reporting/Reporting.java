@@ -22,6 +22,7 @@
 package org.jboss.japit.reporting;
 
 import java.io.File;
+import java.util.List;
 import java.util.TreeSet;
 import org.jboss.japit.core.Archive;
 
@@ -31,22 +32,24 @@ import org.jboss.japit.core.Archive;
  */
 public class Reporting {
 
-    public static void generateReports(TreeSet<Archive> archives, boolean isTextOutputDisbled, File txtOutputDir, File htmlOutputDir) {
+    public static void generateReports(List<Archive> archives, boolean isTextOutputDisbled, File txtOutputDir, File htmlOutputDir) {
+
+        TreeSet<Archive> sortedArchives = new TreeSet<Archive>(archives);  // to sort them        
 
         if (!isTextOutputDisbled) {
-            new TextReportGenerator().generateReport(archives);
+            new TextReportGenerator().generateReport(sortedArchives);
         }
 
         if (txtOutputDir != null) {
-            new TxtFileReportGenerator(new File(txtOutputDir, "report.txt")).generateReport(archives);
+            new TxtFileReportGenerator(new File(txtOutputDir, "report.txt")).generateReport(sortedArchives);
         }
 
         if (htmlOutputDir != null) {
-            new HtmlFileReportGenerator(htmlOutputDir).generateReport(archives);
+            new HtmlFileReportGenerator(htmlOutputDir).generateReport(sortedArchives);
         }
     }
 
-    public static void generateDiffReports(TreeSet<Archive> archives, boolean isTextOutputDisbled,
+    public static void generateDiffReports(List<Archive> archives, boolean isTextOutputDisbled,
             File txtOutputDir, File htmlOutputDir, boolean ignoreClassVersion, boolean suppressArchiveReport) {
 
         if (!isTextOutputDisbled) {

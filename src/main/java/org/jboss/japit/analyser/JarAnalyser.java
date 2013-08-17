@@ -24,6 +24,7 @@ package org.jboss.japit.analyser;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.TreeSet;
@@ -43,8 +44,8 @@ import org.jboss.japit.core.JarArchive;
  */
 public class JarAnalyser {
 
-    public static TreeSet<Archive> analyseJars(List<File> inputFiles, String selectedFQCN) {
-        TreeSet<Archive> jarArchives = new TreeSet<Archive>();
+    public static List<Archive> analyseJars(List<File> inputFiles, String selectedFQCN) {
+        List<Archive> jarArchives = new ArrayList<Archive>(inputFiles.size());
 
         for (File file : inputFiles) {
 
@@ -55,7 +56,7 @@ public class JarAnalyser {
                 jarArchive = new JarArchive(file.getName(), file.getCanonicalPath());
             } catch (IOException ex) {
                 System.err.println(file.getName() + " is not regular jar file, skipping it.");
-                ex.printStackTrace();
+                ex.printStackTrace(System.err);
                 continue;
             }
             TreeSet<ClassDetails> classes = new TreeSet<ClassDetails>();
