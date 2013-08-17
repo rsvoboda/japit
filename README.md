@@ -15,7 +15,7 @@ Output:
 Building
 -------------------
 
-Ensure you have Maven installed
+Ensure you have Maven installed, maven-shade-plugin packages all dependencies in final jar
 
 > mvn clean package
 
@@ -25,14 +25,7 @@ Executing Maven Way
 
 Executing Command Line Way
 ------------------------------------------
-Prepare dependencies
-> mvn dependency:copy-dependencies
-
-Java command for *nix-like systems
-> java -cp target/dependency/args4j-2.0.25.jar:target/dependency/javassist-3.18.0-GA.jar:target/japit.jar org.jboss.japit.ListAPIMain
-
-Java command for Windows systems 
-> java -cp target/dependency/args4j-2.0.25.jar;target/dependency/javassist-3.18.0-GA.jar;target/japit.jar org.jboss.japit.ListAPIMain
+> java -cp target/japit.jar org.jboss.japit.ListAPIMain
 
 org.jboss.japit.ListAPIMain
 ------------------------------------------
@@ -58,5 +51,5 @@ org.jboss.japit.CompareAPIMain
 
   Example: java org.jboss.japit.CompareAPIMain -c (--class) FQCN -d (--disable-console-output) -h 
   (--html-output) DIR -i (--ignore-class-version) -s (--suppress-archive-report) -t (--txt-output) DIR
-  FirstJarFile SecondJarFile
+  FirstPairFirstJar FirstPairSecondJar [SecondPairFirstJar SecondPairSecondJar ...]
 ```
