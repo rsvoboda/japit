@@ -15,6 +15,7 @@
         <version.javassist>3.18.0-GA</version.javassist>
         <version.junit>4.11</version.junit>
         <version.maven-compiler-plugin>3.1</version.maven-compiler-plugin>
+        <version.maven-shade-plugin>2.1</version.maven-shade-plugin>
     </properties>
 
     <dependencies>
@@ -56,6 +57,19 @@
                     <source>1.5</source>
                     <target>1.5</target>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>${version.maven-shade-plugin}</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
