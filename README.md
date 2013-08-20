@@ -44,12 +44,13 @@ org.jboss.japit.CompareAPIMain
 ```
  -c (--class) FQCN              : List API only for specified class
  -d (--disable-console-output)  : Disable text output to the console
+ -e (--enable-declared-items)   : Enable declared methods and fiels in comparison
  -h (--html-output) DIR         : Enable HTML output and set output directory
  -i (--ignore-class-version)    : Ignore class version in comparison
  -s (--suppress-archive-report) : Suppress archive reports in output
  -t (--txt-output) DIR          : Enable TXT output and set output directory
 
-  Example: java org.jboss.japit.CompareAPIMain -c (--class) FQCN -d (--disable-console-output) -h 
-  (--html-output) DIR -i (--ignore-class-version) -s (--suppress-archive-report) -t (--txt-output) DIR
-  FirstPairFirstJar FirstPairSecondJar [SecondPairFirstJar SecondPairSecondJar ...]
+  Example: java org.jboss.japit.CompareAPIMain -c (--class) FQCN -d (--disable-console-output) 
+  -e (--enable-declared-items) -h (--html-output) DIR -i (--ignore-class-version) -s (--suppress-archive-report)
+  -t (--txt-output) DIR  FirstPairFirstJar FirstPairSecondJar [SecondPairFirstJar SecondPairSecondJar ...]
 ```
