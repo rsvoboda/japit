@@ -50,18 +50,18 @@ public class Reporting {
     }
 
     public static void generateDiffReports(List<Archive> archives, boolean isTextOutputDisbled,
-            File txtOutputDir, File htmlOutputDir, boolean ignoreClassVersion, boolean suppressArchiveReport) {
+            File txtOutputDir, File htmlOutputDir, boolean ignoreClassVersion, boolean suppressArchiveReport, boolean enableDeclaredItems) {
 
         if (!isTextOutputDisbled) {
-            new TextReportGenerator().generateDiffReport(archives, ignoreClassVersion, suppressArchiveReport);
+            new TextReportGenerator().generateDiffReport(archives, ignoreClassVersion, suppressArchiveReport, enableDeclaredItems);
         }
 
         if (txtOutputDir != null) {
-            new TxtFileReportGenerator(new File(txtOutputDir, "report.txt")).generateDiffReport(archives, ignoreClassVersion, suppressArchiveReport);
+            new TxtFileReportGenerator(new File(txtOutputDir, "report.txt")).generateDiffReport(archives, ignoreClassVersion, suppressArchiveReport, enableDeclaredItems);
         }
 
         if (htmlOutputDir != null) {
-            new HtmlFileReportGenerator(htmlOutputDir).generateDiffReport(archives, ignoreClassVersion, suppressArchiveReport);
+            new HtmlFileReportGenerator(htmlOutputDir).generateDiffReport(archives, ignoreClassVersion, suppressArchiveReport, enableDeclaredItems);
         }
 
     }

@@ -96,7 +96,7 @@ public class CompareAPIMain {
         }
 
         Reporting.generateDiffReports(jarArchives, options.isTextOutputDisbled(), options.getTxtOutputDir(),
-                options.getHtmlOutputDir(), options.isIgnoreClassVersion(), options.isSuppressArchiveReport());
+                options.getHtmlOutputDir(), options.isIgnoreClassVersion(), options.isSuppressArchiveReport(), options.isEnableDeclaredItems());
 
     }
 }

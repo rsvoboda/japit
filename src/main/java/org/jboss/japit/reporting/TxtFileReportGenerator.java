@@ -60,7 +60,7 @@ public class TxtFileReportGenerator implements ReportGenerator {
         }
     }
 
-    public void generateDiffReport(Collection<Archive> archives, boolean ignoreClassVersion, boolean suppressArchiveReport) {
+    public void generateDiffReport(Collection<Archive> archives, boolean ignoreClassVersion, boolean suppressArchiveReport, boolean enableDeclaredItems) {
         try {
             FileOutputStream fos = new FileOutputStream(outputFile);
             PrintStream out = new PrintStream(fos, true);
@@ -71,7 +71,7 @@ public class TxtFileReportGenerator implements ReportGenerator {
                     out.println(archive);
                 }
             }
-            TextFactory.generateTextDiff(out, archives, ignoreClassVersion);
+            TextFactory.generateTextDiff(out, archives, ignoreClassVersion, enableDeclaredItems);
 
             out.close();
             fos.close();

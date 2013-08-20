@@ -40,7 +40,7 @@ public class TextFactory {
     private TextFactory() {
     }
 
-    public static void generateTextDiff(PrintStream out, Collection<Archive> archives, boolean ignoreClassVersion) {
+    public static void generateTextDiff(PrintStream out, Collection<Archive> archives, boolean ignoreClassVersion, boolean enableDeclaredItems) {
         Iterator<Archive> iter = archives.iterator();
         JarArchive first = (JarArchive) iter.next();
         JarArchive second = (JarArchive) iter.next();
@@ -82,7 +82,7 @@ public class TextFactory {
                 fail(out, "methods count doesn't match: " + firstJarClass.getMethodsCount() + " vs. " + secondJarClass.getMethodsCount());
             }
 
-            if (firstJarClass.getDeclaredMethodsCount() != secondJarClass.getDeclaredMethodsCount()) {
+            if (enableDeclaredItems && firstJarClass.getDeclaredMethodsCount() != secondJarClass.getDeclaredMethodsCount()) {
                 fail(out, "declared methods count doesn't match: " + firstJarClass.getDeclaredMethodsCount() + " vs. " + secondJarClass.getDeclaredMethodsCount());
             }
 
@@ -90,7 +90,7 @@ public class TextFactory {
                 fail(out, "fields count doesn't match: " + firstJarClass.getFieldsCount() + " vs. " + secondJarClass.getFieldsCount());
             }
 
-            if (firstJarClass.getDeclaredFieldsCount() != secondJarClass.getDeclaredFieldsCount()) {
+            if (enableDeclaredItems && firstJarClass.getDeclaredFieldsCount() != secondJarClass.getDeclaredFieldsCount()) {
                 fail(out, "declared fields count doesn't match: " + firstJarClass.getDeclaredFieldsCount() + " vs. " + secondJarClass.getDeclaredFieldsCount());
             }
 

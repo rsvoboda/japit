@@ -41,6 +41,8 @@ public class CompareAPIMainOptions {
     private boolean ignoreClassVersion = false;
     @Option(name = "-s", aliases = {"--suppress-archive-report"}, usage = "Suppress archive reports in output")
     private boolean suppressArchiveReport = false;
+    @Option(name = "-e", aliases = {"--enable-declared-items"}, usage = "Enable declared methods and fiels in comparison")
+    private boolean enableDeclaredItems = false;
     @Option(name = "-h", aliases = {"--html-output"}, usage = "Enable HTML output and set output directory", metaVar = "DIR")
     private File htmlOutputDir;
     @Option(name = "-t", aliases = {"--txt-output"}, usage = "Enable TXT output and set output directory", metaVar = "DIR")
@@ -77,6 +79,10 @@ public class CompareAPIMainOptions {
         return suppressArchiveReport;
     }
 
+    public boolean isEnableDeclaredItems() {
+        return enableDeclaredItems;
+    }
+    
     @Override
     public String toString() {
         return "ListAPIMainOptions{" + "selectedFQCN=" + selectedFQCN + ", "

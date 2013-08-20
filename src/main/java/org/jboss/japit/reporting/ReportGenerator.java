@@ -32,5 +32,5 @@ public interface ReportGenerator {
 
     public void generateReport(Collection<Archive> archives);
 
-    public void generateDiffReport(Collection<Archive> archives, boolean ignoreClassVersion, boolean suppressArchiveReport);
+    public void generateDiffReport(Collection<Archive> archives, boolean ignoreClassVersion, boolean suppressArchiveReport, boolean enableDeclaredItems);
 }

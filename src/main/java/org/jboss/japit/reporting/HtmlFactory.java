@@ -108,7 +108,8 @@ public class HtmlFactory {
         }
     }
 
-    public static void generateDiffReportFile(Collection<Archive> archives, File outputDir, boolean ignoreClassVersion, boolean suppressArchiveReport) {
+    public static void generateDiffReportFile(Collection<Archive> archives, File outputDir, boolean ignoreClassVersion, 
+            boolean suppressArchiveReport, boolean enableDeclaredItems) {
         Iterator<Archive> iter = archives.iterator();
         int counter = 0;
         while (iter.hasNext()) {
@@ -123,7 +124,7 @@ public class HtmlFactory {
 
                 generateHeader(bw, first.getFileName());
 
-                generateDiffReportBody(bw, first, second, ignoreClassVersion, suppressArchiveReport, targetFileName);
+                generateDiffReportBody(bw, first, second, ignoreClassVersion, suppressArchiveReport, enableDeclaredItems, targetFileName);
 
                 bw.write("</table>" + NEW_LINE);
                 bw.write("<br/>" + NEW_LINE);
@@ -140,7 +141,7 @@ public class HtmlFactory {
     }
 
     private static void generateDiffReportBody(BufferedWriter bw, JarArchive first, JarArchive second,
-            boolean ignoreClassVersion, boolean suppressArchiveReport, String targetFileName) throws IOException {
+            boolean ignoreClassVersion, boolean suppressArchiveReport, boolean enableDeclaredItems, String targetFileName) throws IOException {
         bw.write("<h1>" + first.getFileName() + " vs. " + second.getFileName() + "</h1>" + NEW_LINE);
         bw.write("<h2>" + first.getFilePath() + " vs. " + second.getFilePath() + "</h2>" + NEW_LINE);
         bw.write("<a href=\"index.html\">Main</a>" + NEW_LINE);
@@ -197,7 +198,7 @@ public class HtmlFactory {
                 fail(bw, "methods count doesn't match: " + firstJarClass.getMethodsCount() + " vs. " + secondJarClass.getMethodsCount());
             }
 
-            if (firstJarClass.getDeclaredMethodsCount() != secondJarClass.getDeclaredMethodsCount()) {
+            if (enableDeclaredItems && firstJarClass.getDeclaredMethodsCount() != secondJarClass.getDeclaredMethodsCount()) {
                 fail(bw, "declared methods count doesn't match: " + firstJarClass.getDeclaredMethodsCount() + " vs. " + secondJarClass.getDeclaredMethodsCount());
             }
 
@@ -205,7 +206,7 @@ public class HtmlFactory {
                 fail(bw, "fields count doesn't match: " + firstJarClass.getFieldsCount() + " vs. " + secondJarClass.getFieldsCount());
             }
 
-            if (firstJarClass.getDeclaredFieldsCount() != secondJarClass.getDeclaredFieldsCount()) {
+            if (enableDeclaredItems && firstJarClass.getDeclaredFieldsCount() != secondJarClass.getDeclaredFieldsCount()) {
                 fail(bw, "declared fields count doesn't match: " + firstJarClass.getDeclaredFieldsCount() + " vs. " + secondJarClass.getDeclaredFieldsCount());
             }
 

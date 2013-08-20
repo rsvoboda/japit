@@ -57,13 +57,13 @@ class HtmlFileReportGenerator implements ReportGenerator {
 
     }
 
-    public void generateDiffReport(Collection<Archive> archives, boolean ignoreClassVersion, boolean suppressArchiveReport) {
+    public void generateDiffReport(Collection<Archive> archives, boolean ignoreClassVersion, boolean suppressArchiveReport, boolean enableDeclaredItems) {
         if (!suppressArchiveReport) {
             TreeSet<Archive> sortedArchives = new TreeSet<Archive>(archives);
             HtmlFactory.generateArchiveReport(sortedArchives, htmlOutputDir);
         }
         HtmlFactory.generateCSS(htmlOutputDir);
-        HtmlFactory.generateDiffReportFile(archives, htmlOutputDir, ignoreClassVersion, suppressArchiveReport);
+        HtmlFactory.generateDiffReportFile(archives, htmlOutputDir, ignoreClassVersion, suppressArchiveReport, enableDeclaredItems);
         HtmlFactory.generateIndex(archives, htmlOutputDir, true, suppressArchiveReport);
         System.out.println("HTML report in " + htmlOutputDir.getPath() + " was generated");
 
