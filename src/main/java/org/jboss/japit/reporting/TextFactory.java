@@ -98,7 +98,8 @@ public class TextFactory {
             if (!firstJarClass.getSuperclassName().equals(secondJarClass.getSuperclassName())) {
                 fail(out, "super class name doesn't match: " + firstJarClass.getSuperclassName() + " vs. " + secondJarClass.getSuperclassName());
             }
-            if (!firstJarClass.getOriginalJavaFile().equals(secondJarClass.getOriginalJavaFile())) {
+            if (firstJarClass.getOriginalJavaFile() == null || secondJarClass.getOriginalJavaFile() == null ||
+                    !firstJarClass.getOriginalJavaFile().equals(secondJarClass.getOriginalJavaFile())) {
                 fail(out, "original java file doesn't match: " + firstJarClass.getOriginalJavaFile() + " vs. " + secondJarClass.getOriginalJavaFile());
             }
 
