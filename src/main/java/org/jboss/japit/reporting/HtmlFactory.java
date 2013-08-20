@@ -29,7 +29,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import org.jboss.japit.Application;
@@ -45,7 +47,9 @@ public class HtmlFactory {
 
     private static final String NEW_LINE = System.getProperty("line.separator");
     private static boolean failCalled;
-
+    private static boolean failCalledForArchive;
+    private static Map<String, Boolean> failDiffMap = new HashMap<String, Boolean>();
+    
     private HtmlFactory() {
     }
 
@@ -81,7 +85,13 @@ public class HtmlFactory {
                     JarArchive second = (JarArchive) iter.next();
                     counter++;
                     String targetFileName = convertPathForFileName(first.getFilePath()) + "-diff-" + counter + ".html";
-                    bw.write("<li><a href=\"" + targetFileName + "\">"
+                    Boolean diffFailed = failDiffMap.get(targetFileName);
+                    String statusHtmlString = "<span class=\"ok\">OK</span>";;
+                    if (diffFailed == null || diffFailed.equals(Boolean.TRUE)) {
+                         statusHtmlString = "<span class=\"fail\">FAIL</span>";
+                    }
+                    bw.write("<li>" + statusHtmlString + " - "
+                            + "<a href=\"" + targetFileName + "\">"
                             + first.getFileName() + "</a> - " + first.getFilePath() + " vs. " + second.getFilePath());
                     bw.write(" (" + getArchiveReportSize(outputDir, targetFileName) + ")</li>" + NEW_LINE);
                 }
@@ -113,7 +123,7 @@ public class HtmlFactory {
 
                 generateHeader(bw, first.getFileName());
 
-                generateDiffReportBody(bw, first, second, ignoreClassVersion, suppressArchiveReport);
+                generateDiffReportBody(bw, first, second, ignoreClassVersion, suppressArchiveReport, targetFileName);
 
                 bw.write("</table>" + NEW_LINE);
                 bw.write("<br/>" + NEW_LINE);
@@ -130,7 +140,7 @@ public class HtmlFactory {
     }
 
     private static void generateDiffReportBody(BufferedWriter bw, JarArchive first, JarArchive second,
-            boolean ignoreClassVersion, boolean suppressArchiveReport) throws IOException {
+            boolean ignoreClassVersion, boolean suppressArchiveReport, String targetFileName) throws IOException {
         bw.write("<h1>" + first.getFileName() + " vs. " + second.getFileName() + "</h1>" + NEW_LINE);
         bw.write("<h2>" + first.getFilePath() + " vs. " + second.getFilePath() + "</h2>" + NEW_LINE);
         bw.write("<a href=\"index.html\">Main</a>" + NEW_LINE);
@@ -149,6 +159,7 @@ public class HtmlFactory {
         for (ClassDetails firstJarClass : first.getClasses()) {
             firstJarClassesMap.put(firstJarClass.getClassName(), firstJarClass);
         }
+        failCalledForArchive = false;
         for (ClassDetails secondJarClass : second.getClasses()) {
             bw.write("<a name=\"" + secondJarClass.getClassName() + "\"></a> " + NEW_LINE);
             if (suppressArchiveReport) {
@@ -201,7 +212,7 @@ public class HtmlFactory {
             if (!firstJarClass.getSuperclassName().equals(secondJarClass.getSuperclassName())) {
                 fail(bw, "super class name doesn't match: " + firstJarClass.getSuperclassName() + " vs. " + secondJarClass.getSuperclassName());
             }
-            if (firstJarClass.getOriginalJavaFile() == null || secondJarClass.getOriginalJavaFile() == null ||
+            if (firstJarClass.getOriginalJavaFile() != null && secondJarClass.getOriginalJavaFile() != null &&
                     !firstJarClass.getOriginalJavaFile().equals(secondJarClass.getOriginalJavaFile())) {
                 fail(bw, "original java file doesn't match: " + firstJarClass.getOriginalJavaFile() + " vs. " + secondJarClass.getOriginalJavaFile());
             }
@@ -238,12 +249,14 @@ public class HtmlFactory {
                 fail(bw, "class doesn't exist in second jar");
             }
         }
+        failDiffMap.put(targetFileName, failCalledForArchive);
     }
 
     private static void fail(BufferedWriter bw, String details) throws IOException {
         bw.write("<div> <span class=\"fail\">FAIL</span> -- " + details
                 + " </div>" + NEW_LINE);
         failCalled = true;
+        failCalledForArchive = true;
     }
 
     private static void ok(BufferedWriter bw) throws IOException {
