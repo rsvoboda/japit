@@ -34,6 +34,7 @@ import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtField;
 import javassist.CtMethod;
+import javassist.Modifier;
 import org.jboss.japit.core.Archive;
 import org.jboss.japit.core.ClassDetails;
 import org.jboss.japit.core.JarArchive;
@@ -85,13 +86,13 @@ public class JarAnalyser {
 
                             TreeSet<String> methods = new TreeSet<String>();
                             for (CtMethod method : ctClz.getMethods()) {
-                                methods.add(method.getLongName());
+                                methods.add(Modifier.toString(method.getModifiers()) + " " + method.getLongName());
                             }
                             classArchive.setMethods(methods);
 
                             TreeSet<String> fields = new TreeSet<String>();
                             for (CtField field : ctClz.getFields()) {
-                                fields.add(field.getFieldInfo().toString());
+                                fields.add(Modifier.toString(field.getModifiers()) + " " + field.getFieldInfo().toString());
                             }
                             classArchive.setFields(fields);
 
