@@ -368,7 +368,7 @@ public class HtmlFactory {
                 bw.write("     <td class=\"row-heading\">Methods</td>" + NEW_LINE);
                 String mString = "";
                 for (String method : classDetails.getMethods()) {
-                    mString = mString + method + "<br/>";
+                    mString = mString + method + "<br/>\n";
                 }
                 bw.write("     <td>"
                         + mString
@@ -380,7 +380,7 @@ public class HtmlFactory {
                 bw.write("     <td class=\"row-heading\">Fields</td>" + NEW_LINE);
                 String fString = "";
                 for (String field : classDetails.getFields()) {
-                    fString = fString + field + "\n";
+                    fString = fString + field + "<br/>\n";
                 }
                 bw.write("     <td>"
                         + fString

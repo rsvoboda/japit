@@ -136,8 +136,8 @@ public class TextFactory {
                     fail(out, "class doesn't exist in second jar");
                 }
             }
+            out.println();
         }
-        out.println();
     }
 
     private static void fail(PrintStream out, String details) {
