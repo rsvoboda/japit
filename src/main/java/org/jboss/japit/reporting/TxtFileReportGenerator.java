@@ -29,6 +29,8 @@ import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.util.Collection;
 import java.util.TreeSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.jboss.japit.core.Archive;
 
 /**
@@ -48,22 +50,24 @@ public class TxtFileReportGenerator implements ReportGenerator {
 
     public void generateReport(Collection<Archive> archives) {
         try {
-            PrintWriter out = new PrintWriter(outputFile);
+            PrintStream out = new PrintStream(outputFile, "UTF-8");
             for (Archive archive : archives) {
                 out.println(archive);
             }
             out.close();
             System.out.println(outputFile.getPath() + " was generated");
-        } catch (FileNotFoundException ex) {
+        } catch (Exception ex) {
             System.err.println("Exception when creating report");
             ex.printStackTrace(System.err);
         }
     }
 
     public void generateDiffReport(Collection<Archive> archives, boolean ignoreClassVersion, boolean suppressArchiveReport, boolean enableDeclaredItems) {
+        FileOutputStream fos = null;
+        PrintStream out = null;
         try {
-            FileOutputStream fos = new FileOutputStream(outputFile);
-            PrintStream out = new PrintStream(fos, true);
+            fos = new FileOutputStream(outputFile);
+            out = new PrintStream(fos, true, "UTF-8");
 
             if (!suppressArchiveReport) {
                 TreeSet<Archive> sortedArchives = new TreeSet<Archive>(archives);
@@ -73,12 +77,22 @@ public class TxtFileReportGenerator implements ReportGenerator {
             }
             TextFactory.generateTextDiff(out, archives, ignoreClassVersion, enableDeclaredItems);
 
-            out.close();
-            fos.close();
             System.out.println(outputFile.getPath() + " was generated");
         } catch (IOException ex) {
             System.err.println("Exception when creating report");
             ex.printStackTrace(System.err);
+        } finally {
+            if (out != null) {
+                out.close();
+            }
+            if (fos != null) {
+                try {
+                    fos.close();
+                } catch (IOException ex) {
+                    ex.printStackTrace(System.err);
+
+                }
+            }
         }
     }
 }

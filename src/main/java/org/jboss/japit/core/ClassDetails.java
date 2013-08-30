@@ -34,9 +34,7 @@ public class ClassDetails implements Comparable<ClassDetails> {
     private String superclassName;
     private int referencedClasses;
     private String originalJavaFile;
-    private int methodsCount;
     private int declaredMethodsCount;
-    private int fieldsCount;
     private int declaredFieldsCount;
     private TreeSet<String> methods;
     private TreeSet<String> fields;
@@ -86,7 +84,7 @@ public class ClassDetails implements Comparable<ClassDetails> {
     }
 
     public int getMethodsCount() {
-        return methods.size();
+        return methods==null?0:methods.size();
     }
 
     public int getDeclaredMethodsCount() {
@@ -98,7 +96,7 @@ public class ClassDetails implements Comparable<ClassDetails> {
     }
 
     public int getFieldsCount() {
-        return fields.size();
+        return fields==null?0:fields.size();
     }
 
     public int getDeclaredFieldsCount() {
@@ -130,26 +128,54 @@ public class ClassDetails implements Comparable<ClassDetails> {
     }
 
     @Override
-    public String toString() {
-        String mString = "";
-        for (String method : methods) {
-            mString = mString + method + "\n";
+    public int hashCode() {
+        int hash = 3;
+        hash = 61 * hash + (this.className != null ? this.className.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
         }
-        String fString = "";
-        for (String field : fields) {
-            fString = fString + field + "\n";
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final ClassDetails other = (ClassDetails) obj;
+        if ((this.className == null) ? (other.className != null) : !this.className.equals(other.className)) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder mString = new StringBuilder();
+        if (methods != null) {
+            for (String method : methods) {
+                mString.append(method);
+                mString.append("\n");
+            }
+        }
+        StringBuilder fString = new StringBuilder();
+        if (fields != null) {
+            for (String field : fields) {
+                fString.append(field);
+                fString.append("\n");
+            }
         }
         return "\nClass file: " + className + "\n"
                 + "Class version: " + classVersion + "\n"
                 + "Superclass file: " + superclassName + "\n"
                 + "Referenced classes count: " + referencedClasses + "\n"
                 + "Original Java file: " + originalJavaFile + "\n"
-                + "Methods count: " + methodsCount + "\n"
+                + "Methods count: " + getMethodsCount() + "\n"
                 + "Declared Methods count: " + declaredMethodsCount + "\n"
-                + "Fields count: " + fieldsCount + "\n"
+                + "Fields count: " + getFieldsCount() + "\n"
                 + "Declared Fields count: " + declaredFieldsCount + "\n"
-                + "Methods:\n" + mString
-                + "Fields:\n" + fString
+                + "Methods:\n" + mString.toString()
+                + "Fields:\n" + fString.toString()
                 + "=================================";
     }
 }

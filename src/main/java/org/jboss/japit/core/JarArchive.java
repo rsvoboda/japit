@@ -76,6 +76,28 @@ public class JarArchive implements Archive, Comparable<JarArchive> {
     }
 
     @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 73 * hash + (this.filePath != null ? this.filePath.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final JarArchive other = (JarArchive) obj;
+        if ((this.filePath == null) ? (other.filePath != null) : !this.filePath.equals(other.filePath)) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public String toString() {
 
         return "File name: " + fileName + "\n"

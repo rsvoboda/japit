@@ -30,10 +30,9 @@ import java.util.Properties;
  */
 public class Application {
 
-    private static Properties prop = null;
+    private static final Properties prop = new Properties();
 
     static {
-        prop = new Properties();
         try {
             prop.load(Application.class.getClassLoader().getResourceAsStream("application.properties"));
         } catch (IOException ex) {

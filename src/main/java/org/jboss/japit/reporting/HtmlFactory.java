@@ -28,6 +28,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -56,8 +57,9 @@ public class HtmlFactory {
     public static void generateIndex(Collection<Archive> archives, File outputDir,
             boolean includeDiff, boolean suppressArchiveReport) {
         try {
-            FileWriter fw = new FileWriter(new File(outputDir, "index.html"));
-            BufferedWriter bw = new BufferedWriter(fw, 8192);
+            File targetFile = new File(outputDir, "index.html");
+            OutputStreamWriter osWriter = new OutputStreamWriter(new FileOutputStream(targetFile),"UTF-8");
+            BufferedWriter bw = new BufferedWriter(osWriter, 8192);
 
             generateHeader(bw, "Index");
 
@@ -86,7 +88,7 @@ public class HtmlFactory {
                     counter++;
                     String targetFileName = convertPathForFileName(first.getFilePath()) + "-diff-" + counter + ".html";
                     Boolean diffFailed = failDiffMap.get(targetFileName);
-                    String statusHtmlString = "<span class=\"ok\">OK</span>";;
+                    String statusHtmlString = "<span class=\"ok\">OK</span>";
                     if (diffFailed == null || diffFailed.equals(Boolean.TRUE)) {
                          statusHtmlString = "<span class=\"fail\">FAIL</span>";
                     }
@@ -118,9 +120,10 @@ public class HtmlFactory {
             counter++;
             String targetFileName = convertPathForFileName(first.getFilePath()) + "-diff-" + counter + ".html";
 
-            try {
-                FileWriter fw = new FileWriter(new File(outputDir, targetFileName));
-                BufferedWriter bw = new BufferedWriter(fw, 8192);
+            try {                
+                File targetFile = new File(outputDir, targetFileName);
+                OutputStreamWriter osWriter = new OutputStreamWriter(new FileOutputStream(targetFile), "UTF-8");
+                BufferedWriter bw = new BufferedWriter(osWriter, 8192);
 
                 generateHeader(bw, first.getFileName());
 
@@ -178,7 +181,7 @@ public class HtmlFactory {
 
             failCalled = false;
 
-            ClassDetails firstJarClass = null;
+            ClassDetails firstJarClass;
             try {
                 firstJarClass = firstJarClassesMap.remove(secondJarClass.getClassName());
                 if (firstJarClass == null) {
@@ -267,8 +270,9 @@ public class HtmlFactory {
     public static void generateArchiveReport(Collection<Archive> archives, File outputDir) {
         for (Archive archive : archives) {
             try {
-                FileWriter fw = new FileWriter(new File(outputDir, convertPathForFileName(archive.getFilePath()) + ".html"));
-                BufferedWriter bw = new BufferedWriter(fw, 8192);
+                File targetFile =new File(outputDir, convertPathForFileName(archive.getFilePath()) + ".html");
+                OutputStreamWriter osWriter = new OutputStreamWriter(new FileOutputStream(targetFile),"UTF-8");
+                BufferedWriter bw = new BufferedWriter(osWriter, 8192);
 
                 generateHeader(bw, archive.getFileName());
 
@@ -366,25 +370,21 @@ public class HtmlFactory {
             if (classDetails.getMethodsCount() > 0) {
                 bw.write("  <tr class=\"rowodd\">" + NEW_LINE);
                 bw.write("     <td class=\"row-heading\">Methods</td>" + NEW_LINE);
-                String mString = "";
+                bw.write("     <td>");
                 for (String method : classDetails.getMethods()) {
-                    mString = mString + method + "<br/>\n";
+                    bw.write( method + "<br/>" + NEW_LINE);
                 }
-                bw.write("     <td>"
-                        + mString
-                        + "</td>" + NEW_LINE);
+                bw.write("     </td>" + NEW_LINE);
                 bw.write("  </tr>" + NEW_LINE);
             }
             if (classDetails.getFieldsCount() > 0) {
                 bw.write("  <tr class=\"roweven\">" + NEW_LINE);
                 bw.write("     <td class=\"row-heading\">Fields</td>" + NEW_LINE);
-                String fString = "";
+                bw.write("     <td>");
                 for (String field : classDetails.getFields()) {
-                    fString = fString + field + "<br/>\n";
+                    bw.write( field + "<br/>" + NEW_LINE);
                 }
-                bw.write("     <td>"
-                        + fString
-                        + "</td>" + NEW_LINE);
+                bw.write("     </td>" + NEW_LINE);
                 bw.write("  </tr>" + NEW_LINE);
             }
             bw.write("</table>" + NEW_LINE);

@@ -63,7 +63,7 @@ public class TextFactory {
                 out.println(secondJarClass.getClassName() + ":");
                 failCalled = false;
 
-                ClassDetails firstJarClass = null;
+                ClassDetails firstJarClass;
                 try {
                     firstJarClass = firstJarClassesMap.remove(secondJarClass.getClassName());
                     if (firstJarClass == null) {

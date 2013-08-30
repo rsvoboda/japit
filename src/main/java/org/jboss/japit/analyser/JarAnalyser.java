@@ -74,7 +74,7 @@ public class JarAnalyser {
                         ClassPool classPool = new ClassPool();
                         CtClass ctClz = classPool.makeClass(entryStream);
 
-                        if (selectedFQCN == null || (selectedFQCN != null && ctClz.getName().equals(selectedFQCN))) {
+                        if (selectedFQCN == null || ctClz.getName().equals(selectedFQCN)) {
 
                             ClassDetails classArchive = new ClassDetails(ctClz.getName());
                             classArchive.setClassVersion(ctClz.getClassFile().getMajorVersion());
@@ -98,7 +98,7 @@ public class JarAnalyser {
 
                             classes.add(classArchive);
                         }
-                    } catch (Exception ie) {
+                    } catch (Throwable ie) {
                         System.err.println("Exception thrown when processing " + entryName);
                         ie.printStackTrace(System.err);
                     } finally {
@@ -107,6 +107,7 @@ public class JarAnalyser {
                                 entryStream.close();
                             } catch (IOException ex) {
                                 System.err.println("EntryStream couldn't be closed for " + entryName);
+                                ex.printStackTrace(System.err);
                             }
                         }
                     }
