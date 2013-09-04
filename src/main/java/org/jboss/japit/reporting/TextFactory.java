@@ -36,6 +36,7 @@ import org.jboss.japit.core.JarArchive;
 public class TextFactory {
 
     private static boolean failCalled;
+    private static int failCalledForArchiveCount;
 
     private TextFactory() {
     }
@@ -43,6 +44,7 @@ public class TextFactory {
     public static void generateTextDiff(PrintStream out, Collection<Archive> archives, boolean ignoreClassVersion, boolean enableDeclaredItems) {
         Iterator<Archive> iter = archives.iterator();
         while (iter.hasNext()) {
+            failCalledForArchiveCount = 0;
             JarArchive first = (JarArchive) iter.next();
             JarArchive second = (JarArchive) iter.next();
 
@@ -137,15 +139,19 @@ public class TextFactory {
                 }
             }
             out.println();
+            out.println("Number of failures: " + failCalledForArchiveCount);
+            out.println();
         }
     }
 
     private static void fail(PrintStream out, String details) {
         out.println("  FAIL  --  " + details);
         failCalled = true;
+        failCalledForArchiveCount ++;
     }
 
     private static void ok(PrintStream out) {
-        out.println("  OK");
+        // nothing really needed to print, making report shorter
+        // out.println("  OK");
     }
 }
