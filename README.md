@@ -54,3 +54,7 @@ org.jboss.japit.CompareAPIMain
   -e (--enable-declared-items) -h (--html-output) DIR -i (--ignore-class-version) -s (--suppress-archive-report)
   -t (--txt-output) DIR  FirstPairFirstJar FirstPairSecondJar [SecondPairFirstJar SecondPairSecondJar ...]
 ```
+
+License
+------------------------------------------
+* [GNU Lesser General Public License Version 2.1](http://www.gnu.org/licenses/lgpl-2.1-standalone.html)
