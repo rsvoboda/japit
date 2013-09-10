@@ -35,6 +35,7 @@ import javassist.CtClass;
 import javassist.CtField;
 import javassist.CtMethod;
 import javassist.Modifier;
+import javassist.NotFoundException;
 import org.jboss.japit.core.Archive;
 import org.jboss.japit.core.ClassDetails;
 import org.jboss.japit.core.JarArchive;
@@ -71,7 +72,7 @@ public class JarAnalyser {
                     try {
                         entryStream = jar.getInputStream(jarEntry);
 
-                        ClassPool classPool = new ClassPool();
+                        ClassPool classPool = new ClassPool(true);
                         CtClass ctClz = classPool.makeClass(entryStream);
 
                         if (selectedFQCN == null || ctClz.getName().equals(selectedFQCN)) {
@@ -86,7 +87,8 @@ public class JarAnalyser {
 
                             TreeSet<String> methods = new TreeSet<String>();
                             for (CtMethod method : ctClz.getMethods()) {
-                                methods.add(Modifier.toString(method.getModifiers()) + " " + method.getLongName());
+                                methods.add(Modifier.toString(method.getModifiers()) + " " + getReturnTypeName(method)
+                                        + " " + method.getLongName());
                             }
                             classArchive.setMethods(methods);
 
@@ -120,5 +122,15 @@ public class JarAnalyser {
         }
 
         return jarArchives;
+    }
+
+    private static String getReturnTypeName(final CtMethod method) {
+        try {
+            return method.getReturnType().getName();
+        } catch (NotFoundException ex) {
+            // javassist tried to load return type class from classpath but couldn't find it, hence the exception;
+            // getMessage() contains the full class name
+            return ex.getMessage();
+        }
     }
 }
