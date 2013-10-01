@@ -165,9 +165,9 @@ public class ClassDetails implements Comparable<ClassDetails> {
                 fString.append("\n");
             }
         }
-        return "\nClass file: " + className + "\n"
+        return "\nClass: " + className + "\n"
                 + "Class version: " + classVersion + "\n"
-                + "Superclass file: " + superclassName + "\n"
+                + "Superclass: " + superclassName + "\n"
                 + "Referenced classes count: " + referencedClasses + "\n"
                 + "Original Java file: " + originalJavaFile + "\n"
                 + "Methods count: " + getMethodsCount() + "\n"

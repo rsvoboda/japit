@@ -350,7 +350,7 @@ public class HtmlFactory {
             bw.write("     <td>" + classDetails.getOriginalJavaFile() + "</td>" + NEW_LINE);
             bw.write("  </tr>" + NEW_LINE);
             bw.write("  <tr class=\"rowodd\">" + NEW_LINE);
-            bw.write("     <td class=\"row-heading\">Superclass file</td>" + NEW_LINE);
+            bw.write("     <td class=\"row-heading\">Superclass</td>" + NEW_LINE);
             bw.write("     <td>" + classDetails.getSuperclassName() + "</td>" + NEW_LINE);
             bw.write("  </tr>" + NEW_LINE);
             bw.write("  <tr class=\"rowodd\">" + NEW_LINE);
