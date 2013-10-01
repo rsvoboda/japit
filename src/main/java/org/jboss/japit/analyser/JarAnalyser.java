@@ -77,14 +77,14 @@ public class JarAnalyser {
 
                         if (selectedFQCN == null || ctClz.getName().equals(selectedFQCN)) {
 
-                            ClassDetails classArchive = new ClassDetails(ctClz.getName());
+                            ClassDetails classArchive = new ClassDetails(Modifier.toString(ctClz.getModifiers()) + " " + ctClz.getName());
                             classArchive.setClassVersion(ctClz.getClassFile().getMajorVersion());
                             classArchive.setSuperclassName(ctClz.getClassFile().getSuperclass());
                             classArchive.setReferencedClasses(ctClz.getRefClasses().size());
                             classArchive.setOriginalJavaFile(ctClz.getClassFile().getSourceFile());
                             classArchive.setDeclaredMethodsCount(ctClz.getDeclaredMethods().length);
                             classArchive.setDeclaredFieldsCount(ctClz.getDeclaredFields().length);
-
+                            
                             TreeSet<String> methods = new TreeSet<String>();
                             for (CtMethod method : ctClz.getMethods()) {
                                 methods.add(Modifier.toString(method.getModifiers()) + " " + getReturnTypeName(method)
