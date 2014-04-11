@@ -25,9 +25,9 @@ Executing Maven Way
 
 Executing Command Line Way
 ------------------------------------------
-> java -cp target/japit.jar org.jboss.japit.ListAPIMain
+> java -jar japit.jar -cmd (--command) [COMPARE | LIST] [command arguments]
 
-org.jboss.japit.ListAPIMain
+LIST command syntax (java org.jboss.japit.ListAPIMain)
 ------------------------------------------
 ```
  -c (--class) FQCN             : List API only for specified class
@@ -39,7 +39,7 @@ org.jboss.japit.ListAPIMain
   (--html-output) DIR -t (--txt-output) DIR  JarFile1 [JarFile2 ...]
 ```
 
-org.jboss.japit.CompareAPIMain
+COMPARE command syntax (java org.jboss.japit.CompareAPIMain)
 ------------------------------------------
 ```
  -c (--class) FQCN              : List API only for specified class
