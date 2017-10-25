@@ -21,56 +21,14 @@
  */
 package org.jboss.japit;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import org.kohsuke.args4j.Argument;
-import org.kohsuke.args4j.Option;
-
 /**
  *
  * @author Rostislav Svoboda
  */
-public class ListAPIMainOptions {
-
-    @Option(name = "-c", aliases = {"--class"}, usage = "List API only for specified class", metaVar = "FQCN")
-    private String selectedFQCN;
-    @Option(name = "-d", aliases = {"--disable-console-output"}, usage = "Disable text output to the console")
-    private boolean textOutputDisbled = false;
-    @Option(name = "-h", aliases = {"--html-output"}, usage = "Enable HTML output and set output directory", metaVar = "DIR")
-    private File htmlOutputDir;
-    @Option(name = "-t", aliases = {"--txt-output"}, usage = "Enable TXT output and set output directory", metaVar = "DIR")
-    private File txtOutputDir;
-    // receives other command line parameters than options
-    @Argument
-    private List<String> arguments = new ArrayList<String>();
-
-    public List<String> getArguments() {
-        return arguments;
-    }
-
-    public String getSelectedFQCN() {
-        return selectedFQCN;
-    }
-
-    public boolean isTextOutputDisbled() {
-        return textOutputDisbled;
-    }
-
-    public File getHtmlOutputDir() {
-        return htmlOutputDir;
-    }
-
-    public File getTxtOutputDir() {
-        return txtOutputDir;
-    }
+public class ListAPIMainOptions extends BasicOptions {
 
     @Override
     public String toString() {
-        return "ListAPIMainOptions{" + "selectedFQCN=" + selectedFQCN + ", "
-                + "textOutputDisbled=" + textOutputDisbled + ", "
-                + "htmlOutputDir=" + htmlOutputDir + ", "
-                + "txtOutputDir=" + txtOutputDir + ", "
-                + "arguments=" + arguments + '}';
+        return "ListAPIMainOptions{" + attributesToString() + '}';
     }
 }
