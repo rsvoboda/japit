@@ -87,7 +87,7 @@ public class CompareAPIMain {
             return;
         }
 
-        List<Archive> jarArchives = JarAnalyser.analyseJars(inputFiles, options.getSelectedFQCN());
+        List<Archive> jarArchives = new JarAnalyser(options).analyseJars(inputFiles);
 
         if (!(jarArchives.get(0) instanceof JarArchive)) {
             throw new UnsupportedOperationException("Can't generate reports, "

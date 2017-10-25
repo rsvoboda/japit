@@ -82,7 +82,7 @@ public class ListAPIMain {
             return;
         }
 
-        List<Archive> jarArchives = JarAnalyser.analyseJars(inputFiles, options.getSelectedFQCN());
+        List<Archive> jarArchives = new JarAnalyser(options).analyseJars(inputFiles);
 
         Reporting.generateReports(jarArchives, options.isTextOutputDisbled(), options.getTxtOutputDir(), options.getHtmlOutputDir());
 
