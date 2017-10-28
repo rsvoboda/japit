@@ -1,5 +1,15 @@
 # JAPIT
 
+  * [Overview](#overview)
+  * [Building](#building)
+  * [Executing Maven Way](#executing-maven-way)
+  * [Executing Command Line Way](#executing-command-line-way)
+     * [Real life example](#real-life-example)
+  * [LIST command syntax (java org.jboss.japit.ListAPIMain)](#list-command-syntax-java-orgjbossjapitlistapimain)
+  * [COMPARE command syntax (java org.jboss.japit.CompareAPIMain)](#compare-command-syntax-java-orgjbossjapitcompareapimain)
+  * [License](#license)
+
+## Overview
 JavaAPITools - set of utilities to list, compare public APIs and other details for available classes and jar files
 
 * `org.jboss.japit.ListAPIMain` -- list public methods, fields, class details for specified jar files
