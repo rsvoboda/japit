@@ -22,7 +22,6 @@
 package org.jboss.japit;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import org.jboss.japit.analyser.JarAnalyser;
@@ -41,11 +40,11 @@ public class ListAPIMain {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         new ListAPIMain().checkOptions(args);
     }
 
-    public void checkOptions(String[] args) throws IOException {
+    public void checkOptions(String[] args) {
         ListAPIMainOptions options = new ListAPIMainOptions();
         CmdLineParser parser = new CmdLineParser(options);
         parser.setUsageWidth(80);

@@ -22,7 +22,6 @@
 
 package org.jboss.japit;
 
-import java.io.IOException;
 import java.util.List;
 
 import org.kohsuke.args4j.CmdLineException;
@@ -39,10 +38,9 @@ import org.kohsuke.args4j.spi.OptionHandler;
 public class Main {
 
     /**
-     * @param args
-     * @throws IOException
+     * @param args the command line arguments
      */
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
 
         MainOptions options = new MainOptions();
         CmdLineParser parser = new JapitCmdLineParser(options);
