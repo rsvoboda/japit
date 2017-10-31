@@ -66,8 +66,6 @@ public class Main {
             System.err.println();
             System.err.println("  Example: java -jar japit.jar " + parser.printExample(OptionHandlerFilter.ALL)
                     + " [command arguments]");
-
-            return;
         }
     }
 

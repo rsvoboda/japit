@@ -416,15 +416,15 @@ public class HtmlFactory {
                 if (is != null) {
                     is.close();
                 }
-            } catch (IOException ioe) {
-            } // Ignore
+            } catch (IOException ignored) {
+            }
 
             try {
                 if (os != null) {
                     os.close();
                 }
-            } catch (IOException ioe) {
-            } // Ignore
+            } catch (IOException ignored) {
+            }
         }
     }
 }

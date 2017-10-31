@@ -27,7 +27,7 @@ package org.jboss.japit.core;
  */
 public interface Archive {
 
-    public String getFileName();
+    String getFileName();
 
-    public String getFilePath();
+    String getFilePath();
 }

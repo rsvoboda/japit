@@ -30,7 +30,8 @@ import org.jboss.japit.core.Archive;
  */
 public interface ReportGenerator {
 
-    public void generateReport(Collection<Archive> archives);
+    void generateReport(Collection<Archive> archives);
 
-    public void generateDiffReport(Collection<Archive> archives, boolean ignoreClassVersion, boolean suppressArchiveReport, boolean enableDeclaredItems);
+    void generateDiffReport(Collection<Archive> archives, boolean ignoreClassVersion, boolean suppressArchiveReport,
+            boolean enableDeclaredItems);
 }

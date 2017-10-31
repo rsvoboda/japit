@@ -143,10 +143,7 @@ public class ClassDetails implements Comparable<ClassDetails> {
             return false;
         }
         final ClassDetails other = (ClassDetails) obj;
-        if ((this.className == null) ? (other.className != null) : !this.className.equals(other.className)) {
-            return false;
-        }
-        return true;
+        return (this.className == null) ? (other.className == null) : this.className.equals(other.className);
     }
 
     @Override

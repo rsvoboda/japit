@@ -91,10 +91,7 @@ public class JarArchive implements Archive, Comparable<JarArchive> {
             return false;
         }
         final JarArchive other = (JarArchive) obj;
-        if ((this.filePath == null) ? (other.filePath != null) : !this.filePath.equals(other.filePath)) {
-            return false;
-        }
-        return true;
+        return (this.filePath == null) ? (other.filePath == null) : this.filePath.equals(other.filePath);
     }
 
     @Override
