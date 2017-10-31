@@ -34,7 +34,7 @@ public class Reporting {
 
     public static void generateReports(List<Archive> archives, boolean isTextOutputDisbled, File txtOutputDir, File htmlOutputDir) {
 
-        TreeSet<Archive> sortedArchives = new TreeSet<Archive>(archives);  // to sort them        
+        TreeSet<Archive> sortedArchives = new TreeSet<>(archives);  // to sort them
 
         if (!isTextOutputDisbled) {
             new TextReportGenerator().generateReport(sortedArchives);

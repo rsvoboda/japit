@@ -48,7 +48,7 @@ public class ListAPIMain {
         ListAPIMainOptions options = new ListAPIMainOptions();
         CmdLineParser parser = new CmdLineParser(options);
         parser.setUsageWidth(80);
-        List<File> inputFiles = new ArrayList<File>();
+        List<File> inputFiles = new ArrayList<>();
 
         try {
             parser.parseArgument(args);

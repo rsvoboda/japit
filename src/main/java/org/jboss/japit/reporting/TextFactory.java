@@ -57,7 +57,7 @@ public class TextFactory {
             }
             out.println();
 
-            TreeMap<String, ClassDetails> firstJarClassesMap = new TreeMap<String, ClassDetails>();
+            TreeMap<String, ClassDetails> firstJarClassesMap = new TreeMap<>();
             for (ClassDetails firstJarClass : first.getClasses()) {
                 firstJarClassesMap.put(firstJarClass.getClassName(), firstJarClass);
             }

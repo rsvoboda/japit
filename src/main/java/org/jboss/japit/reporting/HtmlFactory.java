@@ -48,7 +48,7 @@ public class HtmlFactory {
     private static final String NEW_LINE = System.getProperty("line.separator");
     private static boolean failCalled;
     private static boolean failCalledForArchive;
-    private static Map<String, Boolean> failDiffMap = new HashMap<String, Boolean>();
+    private static Map<String, Boolean> failDiffMap = new HashMap<>();
     
     private HtmlFactory() {
     }
@@ -66,7 +66,7 @@ public class HtmlFactory {
             if (!suppressArchiveReport) {
                 bw.write("<h2>Archives: </h2>" + NEW_LINE);
                 bw.write("<ul>" + NEW_LINE);
-                TreeSet<Archive> sortedArchives = new TreeSet<Archive>(archives);
+                TreeSet<Archive> sortedArchives = new TreeSet<>(archives);
                 for (Archive archive : sortedArchives) {
                     String targetFileName = convertPathForFileName(archive.getFilePath()) + ".html";
                     bw.write("<li><a href=\"" + targetFileName + "\">"
@@ -158,7 +158,7 @@ public class HtmlFactory {
         }
         bw.write("<br/>" + NEW_LINE);
 
-        TreeMap<String, ClassDetails> firstJarClassesMap = new TreeMap<String, ClassDetails>();
+        TreeMap<String, ClassDetails> firstJarClassesMap = new TreeMap<>();
         for (ClassDetails firstJarClass : first.getClasses()) {
             firstJarClassesMap.put(firstJarClass.getClassName(), firstJarClass);
         }

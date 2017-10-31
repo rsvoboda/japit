@@ -70,7 +70,7 @@ public class JarAnalyser {
     }
 
     public List<Archive> analyseJars(List<File> inputFiles) {
-        List<Archive> jarArchives = new ArrayList<Archive>(inputFiles.size());
+        List<Archive> jarArchives = new ArrayList<>(inputFiles.size());
 
         for (File file : inputFiles) {
             try (JarFile jar = new JarFile(file)) {
@@ -146,14 +146,14 @@ public class JarAnalyser {
             classDetails.setDeclaredMethodsCount(ctClz.getDeclaredMethods().length);
             classDetails.setDeclaredFieldsCount(ctClz.getDeclaredFields().length);
 
-            TreeSet<String> methods = new TreeSet<String>();
+            TreeSet<String> methods = new TreeSet<>();
             for (CtMethod method : ctClz.getMethods()) {
                 methods.add(Modifier.toString(method.getModifiers()) + " " + getReturnTypeName(method) + " "
                         + method.getLongName());
             }
             classDetails.setMethods(methods);
 
-            TreeSet<String> fields = new TreeSet<String>();
+            TreeSet<String> fields = new TreeSet<>();
             for (CtField field : ctClz.getFields()) {
                 fields.add(Modifier.toString(field.getModifiers()) + " " + field.getFieldInfo().toString());
             }

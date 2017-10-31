@@ -39,8 +39,8 @@ public class TxtFileReportGenerator implements ReportGenerator {
 
     public TxtFileReportGenerator(File outputFile) {
         this.outputFile = outputFile;
-        if (!outputFile.getParentFile().exists()) {
-            outputFile.getParentFile().mkdirs();
+        if (!outputFile.getParentFile().exists() && !outputFile.getParentFile().mkdirs()) {
+            throw new IllegalStateException("Couldn't create dir: " + outputFile.getParentFile());
         }
     }
 
@@ -66,7 +66,7 @@ public class TxtFileReportGenerator implements ReportGenerator {
             out = new PrintStream(fos, true, "UTF-8");
 
             if (!suppressArchiveReport) {
-                TreeSet<Archive> sortedArchives = new TreeSet<Archive>(archives);
+                TreeSet<Archive> sortedArchives = new TreeSet<>(archives);
                 for (Archive archive : sortedArchives) {
                     out.println(archive);
                 }

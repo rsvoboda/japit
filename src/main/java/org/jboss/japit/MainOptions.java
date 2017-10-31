@@ -43,7 +43,7 @@ public class MainOptions {
     private Command command;
 
     @Argument
-    private List<String> arguments = new ArrayList<String>();
+    private List<String> arguments = new ArrayList<>();
 
     public List<String> getArguments() {
         return arguments;

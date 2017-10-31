@@ -37,8 +37,8 @@ class HtmlFileReportGenerator implements ReportGenerator {
 
     public HtmlFileReportGenerator(File htmlOutputDir) {
         this.htmlOutputDir = htmlOutputDir;
-        if (!htmlOutputDir.exists()) {
-            htmlOutputDir.mkdirs();
+        if (!htmlOutputDir.exists() && !htmlOutputDir.mkdirs()) {
+            throw new IllegalStateException("Couldn't create dir: " + htmlOutputDir);
         }
     }
 
@@ -59,7 +59,7 @@ class HtmlFileReportGenerator implements ReportGenerator {
 
     public void generateDiffReport(Collection<Archive> archives, boolean ignoreClassVersion, boolean suppressArchiveReport, boolean enableDeclaredItems) {
         if (!suppressArchiveReport) {
-            TreeSet<Archive> sortedArchives = new TreeSet<Archive>(archives);
+            TreeSet<Archive> sortedArchives = new TreeSet<>(archives);
             HtmlFactory.generateArchiveReport(sortedArchives, htmlOutputDir);
         }
         HtmlFactory.generateCSS(htmlOutputDir);

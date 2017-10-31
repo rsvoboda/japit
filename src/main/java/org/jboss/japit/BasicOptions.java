@@ -44,7 +44,7 @@ public abstract class BasicOptions {
     private File txtOutputDir;
     // receives other command line parameters than options
     @Argument
-    private List<String> arguments = new ArrayList<String>();
+    private List<String> arguments = new ArrayList<>();
 
     public List<String> getArguments() {
         return arguments;

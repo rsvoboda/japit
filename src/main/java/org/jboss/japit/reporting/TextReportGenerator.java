@@ -39,7 +39,7 @@ public class TextReportGenerator implements ReportGenerator {
 
     public void generateDiffReport(Collection<Archive> archives, boolean ignoreClassVersion, boolean suppressArchiveReport, boolean enableDeclaredItems) {
         if (!suppressArchiveReport) {
-            TreeSet<Archive> sortedArchives = new TreeSet<Archive>(archives);
+            TreeSet<Archive> sortedArchives = new TreeSet<>(archives);
             generateReport(sortedArchives);
         }
         TextFactory.generateTextDiff(System.out, archives, ignoreClassVersion, enableDeclaredItems);
