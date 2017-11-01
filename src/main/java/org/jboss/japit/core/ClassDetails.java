@@ -21,7 +21,7 @@
  */
 package org.jboss.japit.core;
 
-import java.util.TreeSet;
+import java.util.SortedSet;
 
 /**
  *
@@ -36,8 +36,8 @@ public class ClassDetails implements Comparable<ClassDetails> {
     private String originalJavaFile;
     private int declaredMethodsCount;
     private int declaredFieldsCount;
-    private TreeSet<String> methods;
-    private TreeSet<String> fields;
+    private SortedSet<String> methods;
+    private SortedSet<String> fields;
 
     public ClassDetails(String className) {
         this.className = className;
@@ -107,19 +107,19 @@ public class ClassDetails implements Comparable<ClassDetails> {
         this.declaredFieldsCount = declaredFieldsCount;
     }
 
-    public TreeSet<String> getMethods() {
+    public SortedSet<String> getMethods() {
         return methods;
     }
 
-    public void setMethods(TreeSet<String> methods) {
+    public void setMethods(SortedSet<String> methods) {
         this.methods = methods;
     }
 
-    public TreeSet<String> getFields() {
+    public SortedSet<String> getFields() {
         return fields;
     }
 
-    public void setFields(TreeSet<String> fields) {
+    public void setFields(SortedSet<String> fields) {
         this.fields = fields;
     }
 

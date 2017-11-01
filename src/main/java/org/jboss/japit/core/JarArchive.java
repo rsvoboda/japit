@@ -21,7 +21,7 @@
  */
 package org.jboss.japit.core;
 
-import java.util.TreeSet;
+import java.util.SortedSet;
 
 /**
  *
@@ -31,7 +31,7 @@ public class JarArchive implements Archive, Comparable<JarArchive> {
 
     private String fileName;
     private String filePath;
-    private TreeSet<ClassDetails> classes;
+    private SortedSet<ClassDetails> classes;
 
     public JarArchive() {
     }
@@ -41,7 +41,7 @@ public class JarArchive implements Archive, Comparable<JarArchive> {
         this.filePath = filePath;
     }
 
-    public JarArchive(String fileName, String filePath, TreeSet<ClassDetails> classes) {
+    public JarArchive(String fileName, String filePath, SortedSet<ClassDetails> classes) {
         this.fileName = fileName;
         this.filePath = filePath;
         this.classes = classes;
@@ -63,11 +63,11 @@ public class JarArchive implements Archive, Comparable<JarArchive> {
         this.filePath = filePath;
     }
 
-    public TreeSet<ClassDetails> getClasses() {
+    public SortedSet<ClassDetails> getClasses() {
         return classes;
     }
 
-    public void setClasses(TreeSet<ClassDetails> classes) {
+    public void setClasses(SortedSet<ClassDetails> classes) {
         this.classes = classes;
     }
 
