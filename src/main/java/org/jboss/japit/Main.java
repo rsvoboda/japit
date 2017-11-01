@@ -22,6 +22,8 @@
 
 package org.jboss.japit;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.kohsuke.args4j.CmdLineException;
@@ -29,6 +31,8 @@ import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.NamedOptionDef;
 import org.kohsuke.args4j.OptionHandlerFilter;
 import org.kohsuke.args4j.spi.OptionHandler;
+
+import static java.lang.System.exit;
 
 /**
  * JAPIT jar's main class, which only selects right to to which it gives control based on '-cmd' command line option value.
@@ -98,6 +102,48 @@ public class Main {
             }
             return false;
         }
+    }
+
+    public static List<File> parseArguments(String[] args, BasicOptions options, boolean checkEvenNumberOfArguments, String commandArguments) {
+        CmdLineParser parser = new CmdLineParser(options);
+        parser.setUsageWidth(80);
+        List<File> inputFiles = new ArrayList<>();
+
+        try {
+            parser.parseArgument(args);
+
+            if (options.getArguments().isEmpty()) {
+                throw new CmdLineException(parser, "No argument is given");
+            }
+            if (checkEvenNumberOfArguments && options.getArguments().size() % 2 != 0) {
+                throw new CmdLineException(parser, "Even number of arguments is expected");
+            }
+            if (options.getHtmlOutputDir() != null && options.getHtmlOutputDir().isFile()) {
+                throw new CmdLineException(parser, "HTML output must point to the directory");
+            }
+            if (options.getTxtOutputDir() != null && options.getTxtOutputDir().isFile()) {
+                throw new CmdLineException(parser, "TXT output must point to the directory");
+            }
+
+            for (String argument : options.getArguments()) {
+                File inputFile = new File(argument);
+                if (!inputFile.isFile()) {
+                    throw new CmdLineException(parser, "Provided argument (" + argument
+                            + ") is not a file ");
+                }
+                inputFiles.add(inputFile);
+            }
+
+        } catch (CmdLineException e) {
+            System.err.println(e.getMessage());
+            System.err.println("\nOptions of the command are:");
+            parser.printUsage(System.err);
+            System.err.println("\nArguments of the command are:");
+            System.err.println("  " + commandArguments);
+
+            exit(1);
+        }
+        return inputFiles;
     }
 
 }

@@ -22,15 +22,11 @@
 package org.jboss.japit;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 import org.jboss.japit.analyser.JarAnalyser;
 import org.jboss.japit.core.Archive;
 import org.jboss.japit.core.JarArchive;
 import org.jboss.japit.reporting.Reporting;
-import org.kohsuke.args4j.CmdLineException;
-import org.kohsuke.args4j.CmdLineParser;
-import org.kohsuke.args4j.OptionHandlerFilter;
 
 /**
  *
@@ -47,51 +43,13 @@ public class CompareAPIMain {
 
     public void checkOptions(String[] args) {
         CompareAPIMainOptions options = new CompareAPIMainOptions();
-        CmdLineParser parser = new CmdLineParser(options);
-        parser.setUsageWidth(80);
-        List<File> inputFiles = new ArrayList<>();
-
-        try {
-            parser.parseArgument(args);
-
-            if (options.getArguments().isEmpty()) {
-                throw new CmdLineException(parser, "No argument is given");
-            }
-            if (options.getArguments().size() % 2 != 0) {
-                throw new CmdLineException(parser, "Even number of arguments is expected");
-            }
-            if (options.getHtmlOutputDir() != null && options.getHtmlOutputDir().isFile()) {
-                throw new CmdLineException(parser, "HTML output must point to the directory");
-            }
-            if (options.getTxtOutputDir() != null && options.getTxtOutputDir().isFile()) {
-                throw new CmdLineException(parser, "TXT output must point to the directory");
-            }
-
-            for (String argument : options.getArguments()) {
-                File inputFile = new File(argument);
-                if (!inputFile.isFile()) {
-                    throw new CmdLineException(parser, "Provided argument (" + argument
-                            + ") is not a file ");
-                }
-                inputFiles.add(inputFile);
-            }
-
-        } catch (CmdLineException e) {
-            System.err.println(e.getMessage());
-            parser.printUsage(System.err);
-            System.err.println();
-            System.err.println("  Example: java " + this.getClass().getCanonicalName() + parser.printExample(OptionHandlerFilter.ALL)
-                    + "  FirstPairFirstJar FirstPairSecondJar [SecondPairFirstJar SecondPairSecondJar ...]");
-
-            return;
-        }
+        String commandArguments = "FirstPairFirstJar FirstPairSecondJar [SecondPairFirstJar SecondPairSecondJar ...]";
+        List<File> inputFiles = Main.parseArguments(args, options, true, commandArguments);
 
         List<Archive> jarArchives = new JarAnalyser(options).analyseJars(inputFiles);
-
         if (!(jarArchives.get(0) instanceof JarArchive)) {
             throw new UnsupportedOperationException("Can't generate reports, "
-                    + jarArchives.get(0).getClass().getCanonicalName()
-                    + " is not supported yet.");
+                    + jarArchives.get(0).getClass().getCanonicalName() + " is not supported yet.");
         }
 
         Reporting.generateDiffReports(jarArchives, options.isTextOutputDisbled(), options.getTxtOutputDir(),
