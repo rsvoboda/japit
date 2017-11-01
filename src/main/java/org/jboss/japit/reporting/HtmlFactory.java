@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -56,8 +57,8 @@ public class HtmlFactory {
     public static void generateIndex(Collection<Archive> archives, File outputDir,
             boolean includeDiff, boolean suppressArchiveReport) {
             File targetFile = new File(outputDir, "index.html");
-        try ( OutputStreamWriter osWriter = new OutputStreamWriter(new FileOutputStream(targetFile),"UTF-8");
-            BufferedWriter bw = new BufferedWriter(osWriter, 8192) ) {
+        try (OutputStreamWriter osWriter = new OutputStreamWriter(new FileOutputStream(targetFile), StandardCharsets.UTF_8);
+             BufferedWriter bw = new BufferedWriter(osWriter, 8192) ) {
 
             generateHeader(bw, "Index");
 
@@ -117,7 +118,7 @@ public class HtmlFactory {
             String targetFileName = convertPathForFileName(first.getFilePath()) + "-diff-" + counter + ".html";
 
             File targetFile = new File(outputDir, targetFileName);
-            try ( OutputStreamWriter osWriter = new OutputStreamWriter(new FileOutputStream(targetFile), "UTF-8");
+            try ( OutputStreamWriter osWriter = new OutputStreamWriter(new FileOutputStream(targetFile), StandardCharsets.UTF_8);
                 BufferedWriter bw = new BufferedWriter(osWriter, 8192)) {
 
                 generateHeader(bw, first.getFileName());
@@ -258,7 +259,7 @@ public class HtmlFactory {
     public static void generateArchiveReport(Collection<Archive> archives, File outputDir) {
         for (Archive archive : archives) {
             File targetFile =new File(outputDir, convertPathForFileName(archive.getFilePath()) + ".html");
-            try ( OutputStreamWriter osWriter = new OutputStreamWriter(new FileOutputStream(targetFile),"UTF-8");
+            try ( OutputStreamWriter osWriter = new OutputStreamWriter(new FileOutputStream(targetFile), StandardCharsets.UTF_8);
                 BufferedWriter bw = new BufferedWriter(osWriter, 8192) ) {
 
                 generateHeader(bw, archive.getFileName());

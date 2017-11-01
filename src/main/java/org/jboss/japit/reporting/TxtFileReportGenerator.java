@@ -25,6 +25,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.TreeSet;
 import org.jboss.japit.core.Archive;
@@ -45,7 +46,7 @@ public class TxtFileReportGenerator implements ReportGenerator {
     }
 
     public void generateReport(Collection<Archive> archives) {
-        try (PrintStream out = new PrintStream(outputFile, "UTF-8")){
+        try (FileOutputStream fos = new FileOutputStream(outputFile); PrintStream out = new PrintStream(fos, true, StandardCharsets.UTF_8.name())){
             for (Archive archive : archives) {
                 out.println(archive);
             }
@@ -58,7 +59,7 @@ public class TxtFileReportGenerator implements ReportGenerator {
 
     public void generateDiffReport(Collection<Archive> archives, boolean ignoreClassVersion, boolean suppressArchiveReport, boolean enableDeclaredItems) {
 
-        try (FileOutputStream fos = new FileOutputStream(outputFile); PrintStream out = new PrintStream(fos, true, "UTF-8")) {
+        try (FileOutputStream fos = new FileOutputStream(outputFile); PrintStream out = new PrintStream(fos, true, StandardCharsets.UTF_8.name())){
             if (!suppressArchiveReport) {
                 TreeSet<Archive> sortedArchives = new TreeSet<>(archives);
                 for (Archive archive : sortedArchives) {
