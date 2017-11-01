@@ -175,13 +175,8 @@ public class HtmlFactory {
             failCalled = false;
 
             ClassDetails firstJarClass;
-            try {
-                firstJarClass = firstJarClassesMap.remove(secondJarClass.getClassName());
-                if (firstJarClass == null) {
-                    fail(bw, "class doesn't exist in first jar");
-                    continue;
-                }
-            } catch (Exception e) {
+            firstJarClass = firstJarClassesMap.remove(secondJarClass.getClassName());
+            if (firstJarClass == null) {
                 fail(bw, "class doesn't exist in first jar");
                 continue;
             }
@@ -382,7 +377,7 @@ public class HtmlFactory {
     }
 
     public static void generateCSS(File outputDir) {
-        byte buffer[] = new byte[8192];
+        byte[] buffer = new byte[8192];
         int bytesRead;
 
         try (InputStream is = HtmlFactory.class.getClassLoader().getResourceAsStream("style.css");

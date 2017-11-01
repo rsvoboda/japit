@@ -66,13 +66,8 @@ public class TextFactory {
                 failCalled = false;
 
                 ClassDetails firstJarClass;
-                try {
-                    firstJarClass = firstJarClassesMap.remove(secondJarClass.getClassName());
-                    if (firstJarClass == null) {
-                        fail(out, "class doesn't exist in first jar");
-                        continue;
-                    }
-                } catch (Exception e) {
+                firstJarClass = firstJarClassesMap.remove(secondJarClass.getClassName());
+                if (firstJarClass == null) {
                     fail(out, "class doesn't exist in first jar");
                     continue;
                 }
