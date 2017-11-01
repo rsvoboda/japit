@@ -55,10 +55,9 @@ public class HtmlFactory {
 
     public static void generateIndex(Collection<Archive> archives, File outputDir,
             boolean includeDiff, boolean suppressArchiveReport) {
-        try {
             File targetFile = new File(outputDir, "index.html");
-            OutputStreamWriter osWriter = new OutputStreamWriter(new FileOutputStream(targetFile),"UTF-8");
-            BufferedWriter bw = new BufferedWriter(osWriter, 8192);
+        try ( OutputStreamWriter osWriter = new OutputStreamWriter(new FileOutputStream(targetFile),"UTF-8");
+            BufferedWriter bw = new BufferedWriter(osWriter, 8192) ) {
 
             generateHeader(bw, "Index");
 
@@ -101,8 +100,6 @@ public class HtmlFactory {
 
             generateFooter(bw);
 
-            bw.flush();
-            bw.close();
         } catch (Exception e) {
             System.err.println("GenerateIndex: " + e.getMessage());
             e.printStackTrace(System.err);
@@ -119,10 +116,9 @@ public class HtmlFactory {
             counter++;
             String targetFileName = convertPathForFileName(first.getFilePath()) + "-diff-" + counter + ".html";
 
-            try {                
-                File targetFile = new File(outputDir, targetFileName);
-                OutputStreamWriter osWriter = new OutputStreamWriter(new FileOutputStream(targetFile), "UTF-8");
-                BufferedWriter bw = new BufferedWriter(osWriter, 8192);
+            File targetFile = new File(outputDir, targetFileName);
+            try ( OutputStreamWriter osWriter = new OutputStreamWriter(new FileOutputStream(targetFile), "UTF-8");
+                BufferedWriter bw = new BufferedWriter(osWriter, 8192)) {
 
                 generateHeader(bw, first.getFileName());
 
@@ -133,8 +129,6 @@ public class HtmlFactory {
 
                 generateFooter(bw);
 
-                bw.flush();
-                bw.close();
             } catch (Exception e) {
                 System.err.println("generateArchiveReport: " + e.getMessage());
                 e.printStackTrace(System.err);
@@ -268,10 +262,9 @@ public class HtmlFactory {
 
     public static void generateArchiveReport(Collection<Archive> archives, File outputDir) {
         for (Archive archive : archives) {
-            try {
-                File targetFile =new File(outputDir, convertPathForFileName(archive.getFilePath()) + ".html");
-                OutputStreamWriter osWriter = new OutputStreamWriter(new FileOutputStream(targetFile),"UTF-8");
-                BufferedWriter bw = new BufferedWriter(osWriter, 8192);
+            File targetFile =new File(outputDir, convertPathForFileName(archive.getFilePath()) + ".html");
+            try ( OutputStreamWriter osWriter = new OutputStreamWriter(new FileOutputStream(targetFile),"UTF-8");
+                BufferedWriter bw = new BufferedWriter(osWriter, 8192) ) {
 
                 generateHeader(bw, archive.getFileName());
 
@@ -281,9 +274,6 @@ public class HtmlFactory {
 
                 generateArchiveReportBody(bw, (JarArchive) archive);   // type check done in HtmlFileReportGenerator
                 generateFooter(bw);
-
-                bw.flush();
-                bw.close();
             } catch (Exception e) {
                 System.err.println("generateArchiveReport: " + e.getMessage());
                 e.printStackTrace(System.err);
@@ -395,36 +385,14 @@ public class HtmlFactory {
         byte buffer[] = new byte[8192];
         int bytesRead;
 
-        InputStream is = null;
-        OutputStream os = null;
-
-
-        try {
-            is = HtmlFactory.class
-                    .getClassLoader().getResourceAsStream("style.css");
-            os = new FileOutputStream(new File(outputDir, "style.css"));
+        try (InputStream is = HtmlFactory.class.getClassLoader().getResourceAsStream("style.css");
+             OutputStream os = new FileOutputStream(new File(outputDir, "style.css"));) {
             while ((bytesRead = is.read(buffer)) != -1) {
                 os.write(buffer, 0, bytesRead);
             }
-
-            os.flush();
         } catch (Exception e) {
             System.err.println("GenerateCSS: " + e.getMessage());
             e.printStackTrace(System.err);
-        } finally {
-            try {
-                if (is != null) {
-                    is.close();
-                }
-            } catch (IOException ignored) {
-            }
-
-            try {
-                if (os != null) {
-                    os.close();
-                }
-            } catch (IOException ignored) {
-            }
         }
     }
 }

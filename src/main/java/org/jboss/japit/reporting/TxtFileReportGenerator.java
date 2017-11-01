@@ -45,12 +45,10 @@ public class TxtFileReportGenerator implements ReportGenerator {
     }
 
     public void generateReport(Collection<Archive> archives) {
-        try {
-            PrintStream out = new PrintStream(outputFile, "UTF-8");
+        try (PrintStream out = new PrintStream(outputFile, "UTF-8")){
             for (Archive archive : archives) {
                 out.println(archive);
             }
-            out.close();
             System.out.println(outputFile.getPath() + " was generated");
         } catch (Exception ex) {
             System.err.println("Exception when creating report");
@@ -59,12 +57,8 @@ public class TxtFileReportGenerator implements ReportGenerator {
     }
 
     public void generateDiffReport(Collection<Archive> archives, boolean ignoreClassVersion, boolean suppressArchiveReport, boolean enableDeclaredItems) {
-        FileOutputStream fos = null;
-        PrintStream out = null;
-        try {
-            fos = new FileOutputStream(outputFile);
-            out = new PrintStream(fos, true, "UTF-8");
 
+        try (FileOutputStream fos = new FileOutputStream(outputFile); PrintStream out = new PrintStream(fos, true, "UTF-8")) {
             if (!suppressArchiveReport) {
                 TreeSet<Archive> sortedArchives = new TreeSet<>(archives);
                 for (Archive archive : sortedArchives) {
@@ -77,18 +71,6 @@ public class TxtFileReportGenerator implements ReportGenerator {
         } catch (IOException ex) {
             System.err.println("Exception when creating report");
             ex.printStackTrace(System.err);
-        } finally {
-            if (out != null) {
-                out.close();
-            }
-            if (fos != null) {
-                try {
-                    fos.close();
-                } catch (IOException ex) {
-                    ex.printStackTrace(System.err);
-
-                }
-            }
         }
     }
 }
